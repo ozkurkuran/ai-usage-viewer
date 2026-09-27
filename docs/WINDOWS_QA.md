@@ -13,15 +13,16 @@ Target: Windows 11 x64. ARM64 and Windows 10 support are not claimed.
 | Monitor work-area clamping | Passed on available 3840×2112 work area at 96 DPI |
 | Mixed-DPI monitor transition/removal | Pending physical hardware scenario |
 | Actual suspend/resume and overnight usage | Pending long-duration manual observation |
+| Normal-background resource observation | 30 minutes / 60 samples completed; no collection failures or source warnings; CPU/memory/handle figures in implementation status |
 | Self-contained portable with fresh synthetic data directory | Passed; runtime loaded from package directory |
 | Installer, uninstall and data retention | Clean Sandbox passed; 632 records / 9,762,481 tokens unchanged after restart; data retained on uninstall |
-| Upgrade | Same-version reinstall passed; no previous released version exists for cross-version test |
+| Upgrade | Beta.1→beta.2 and same-version reinstall passed in clean Sandbox; history retained |
 | Clean Windows 11 without SDK/CLI | Passed in network-isolated Windows Sandbox build 26100; dotnet absent from PATH |
-| Windows startup | Command construction automated; uninstall removes matching entry in guest; login launch pending |
+| Windows startup | Real sign-out/new-logon in Sandbox passed: HKCU Run, quoted paths, no main window; uninstall removes matching entry |
 | Live Claude/Codex read-only quota | Passed earlier; repeat after material provider changes |
-| Official client quota display comparison at matching time | Pending explicit side-by-side record |
+| Official client quota display comparison at matching time | Claude Code 2.1.283 `/usage` and Codex 0.155.1 `/status` compared; structured Claude model scope fixed and verified |
 | Live OpenRouter standard/management keys | No test key supplied; synthetic permissions/contract cases only |
-| Windows CI | Workflow prepared; no public remote/CI execution yet |
+| Windows CI | First public run passed build, 68 tests, packages and UI smoke; link in implementation status |
 
 Manual release procedure:
 
@@ -49,3 +50,32 @@ Manual release procedure:
 
 Store only counts, version/build numbers, timing and non-sensitive pass/fail
 results as evidence. A stable v1.0 requires the pending gates to be resolved.
+
+## Reproduce isolated Sandbox checks
+
+Run from the repository root on a Windows host with Windows Sandbox and `wsb.exe`.
+Use a fresh output directory for every run. Packages must already exist under
+`artifacts/release`; an optional beta.1 setup adds the upgrade scenario.
+
+```powershell
+./scripts/sandbox-test.ps1 -Output artifacts/sandbox-check -Version 0.3.0-beta.2
+./scripts/sandbox-test.ps1 -Output artifacts/startup-check -Version 0.3.0-beta.2 -Scenario startup
+```
+
+The lifecycle guest writes `sandbox-result.json` and shuts down. The startup
+scenario first writes `startup-stage.json` with `stage: ready-for-logoff`. Wait
+for that stage and check there is no failure report before the next commands.
+Use exactly the ID generated in that fresh run; these commands sign out only
+the disposable guest, never the host:
+
+```powershell
+$sandboxId = (Get-Content artifacts/startup-check/sandbox-id.txt -Raw).Trim()
+wsb.exe exec --id $sandboxId --command 'shutdown.exe /l' --run-as ExistingLogin --raw
+Start-Process wsb.exe -ArgumentList @('connect','--id',$sandboxId) -WindowStyle Hidden
+```
+
+The new guest logon runs a verifier through RunOnce. It checks a different token
+authentication ID, the app started through HKCU Run with paths containing spaces,
+database initialization and no visible main window. It writes `startup-result.json`
+and shuts down. `wsb.exe list --raw` can confirm the guest has stopped. Do not
+substitute a host sign-out or modify host startup settings for this procedure.

@@ -9,6 +9,12 @@
   dispatcher delay, collection progress and provider refresh states.
 - Sandbox package selection is version-specific and can validate an upgrade
   from beta.1 to beta.2 while retaining the existing history.
+- Verified clean Windows Sandbox installation, beta.1 upgrade, restart, uninstall
+  with retained data, and actual background startup after a new guest logon.
+- Compared read-only quotas with Claude Code 2.1.283 and Codex 0.155.1. Completed
+  a 30-minute normal-background resource observation with no collection failures.
+- Public MIT repository and Windows CI covering build, 68 tests, packages and
+  synthetic UI smoke. Source and distribution packages exclude local account data.
 
 Still a pre-release; physical monitor, actual suspend/resume and live OpenRouter
 account validation are not claimed by these changes.
@@ -32,4 +38,4 @@ DPI/suspend/long-duration testing remain explicit release gates in WINDOWS_QA.md
 The self-contained portable and installer passed a clean Windows 11 Sandbox
 lifecycle test without an installed SDK, including restart and data retention.
 
-No remote release has been published. Initial locally built packages are unsigned.
+Beta.1 was a local preview. Initial packages are unsigned.

@@ -39,7 +39,7 @@ try {
         $result.checks+='previous beta.1 installed with existing history before upgrade'
     }
     Run-Checked $installer.FullName $installArguments
-    if((Get-Item -LiteralPath (Join-Path $installed 'AIUsageViewer.exe')).VersionInfo.ProductVersion -ne $Version) { throw 'Installed version mismatch.' }
+    if(((Get-Item -LiteralPath (Join-Path $installed 'AIUsageViewer.exe')).VersionInfo.ProductVersion -split '\+')[0] -ne $Version) { throw 'Installed version mismatch.' }
     $result.checks+='per-user installer completed'
     & C:\ViewerScripts\smoke.ps1 -Executable (Join-Path $installed 'AIUsageViewer.exe') -Output (Join-Path $output 'installed') -Suite -DataDirectory $data
     $second=Get-Content (Join-Path $output 'installed\smoke-report.json') -Raw | ConvertFrom-Json

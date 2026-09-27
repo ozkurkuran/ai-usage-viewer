@@ -1,24 +1,25 @@
 # Implementation evidence
 
-Scope: ../../PLAN.md. No stable v1.0 or completed full-roadmap claim is made
+Scope: [original plan](PLAN_TR.md). No stable v1.0 or completed full-roadmap claim is made
 until the remaining release gates have actual evidence.
 
 | Phase | Implementation and evidence | Still required |
 |---|---|---|
-| P0: data validation | Synthetic parser tests; live Claude/Codex read-only quota succeeded | Explicit side-by-side official-client display comparison |
+| P0: data validation | Parser tests; live quota; Claude 2.1.283 `/usage` and Codex 0.155.1 `/status` scope/percentage/reset comparisons | Complete for the tested client versions |
 | P1: application foundation | Independent WPF solution, SQLite, MVVM, three surfaces, TR/EN | Complete |
-| P2: usable local monitor | Integrated live UI validation, incremental collection, cached quota/failure handling and restart tests | Longer live soak / resume observation |
+| P2: usable local monitor | Integrated live UI validation, incremental collection, cached quota/failure handling, restart tests and 30-minute normal-background observation | Longer live soak / actual resume observation |
 | P3: analytics | Trend/heatmap, filters, project→session→model drill-down, versioned exact-model prices/overrides and CSV/JSON | Extended UI smoke passed; no separate feature blocker identified |
 | P4: OpenRouter | Independent key/credits/history, partial source retention, period/BYOK, permission, key-change and Retry-After tests | Live standard/management-key verification unavailable without a test key |
-| P5: Windows release | Customization, monitor placement, notifications/startup, licenses/docs/CI, portable ZIP and installer; clean Windows Sandbox lifecycle passed | Physical mixed-DPI, actual suspend/resume, startup login and longer runtime observation pending |
+| P5: Windows release | Customization, monitor placement, notifications/startup, public MIT repository, CI, portable/installer; Sandbox lifecycle, beta.1→beta.2 upgrade and real guest login passed | Physical mixed-DPI, actual suspend/resume and longer field use pending |
 
 ## Completed evidence (2026-09-27)
 
 - .NET SDK 10.0.401 downloaded from Microsoft and SHA-512 verified. Runtime and
   NuGet dependencies are local to the parent workspace's `.tools` directory.
 - Complete Release solution builds with zero warnings and zero errors.
-- Latest completed suite: **63 passed, 0 failed**, including synthetic/live
+- Latest completed suite: **68 passed, 0 failed**, including synthetic/live
   directory isolation and rejection of invalid HTTP credential characters.
+  Added current Claude structured-limit, model/surface scope and legacy-fallback cases.
 - Tests cover normalized token buckets, cumulative deltas/resets, copied logs,
   streaming revisions, fork identity, partial lines, transactional cursors,
   file replacement with unchanged length/mtime, time zones, dynamic quota windows,
@@ -37,6 +38,16 @@ until the remaining release gates have actual evidence.
   metadata identity checks now uses explicit-offset reads. Measured same-process
   repeat: three changed files in about **0.19 seconds**. Cold opens may still take
   around forty seconds on this host; cached UI data is displayed while they warm.
+- A separate fresh-database import of 357 files took about 132 seconds before
+  measurement began. The subsequent normal-background observation completed
+  1,800.92 seconds / 60 samples: 232 additional scans and 950 changed-file reads,
+  zero collection failures or source warnings, and both quota providers Ready.
+  Process CPU increased by 89.14 seconds (about 4.95% of one CPU core); private
+  bytes ranged 69.19–95.52 MiB and ended at 78.12 MiB versus 88.40 MiB initially.
+  Working set ranged 335.09–396.14 MiB; handles ended at 847 versus 921 initially.
+  Maximum measured dispatcher delay beyond its one-second heartbeat was 0.861
+  seconds. This host was concurrently running development and Sandbox tasks;
+  these measurements are a bounded baseline, not an overnight/leak-free claim.
 - Extended WPF smoke passed (`artifacts/suite-today/smoke-report.json`): three main
   surfaces, project/session/model navigation, widget-only visibility, ordering,
   remaining mode, TR/dark and EN/light settings, all five settings pages,
@@ -57,20 +68,29 @@ until the remaining release gates have actual evidence.
   restart history retention (632 synthetic records / 9,762,481 tokens), same-version
   reinstall and uninstall. App files and its startup entry were removed; user
   history remained. No host registry/startup setting was changed by this test.
-  This does not establish an upgrade from a previously released version.
+  Beta.2 subsequently passed the same lifecycle plus an actual beta.1→beta.2
+  upgrade at 2026-09-27T18:43:14Z (`artifacts/sandbox-beta2/sandbox-result.json`).
+- Actual Windows startup passed at 2026-09-27T18:51:58Z in a separate Sandbox:
+  HKCU Run launched the app after sign-out and a new Windows logon, verified by
+  the token authentication ID. Paths contained spaces, the data initialized, and
+  no main window was visible. Host startup/desktop settings were not changed.
+- Official-client comparison passed: Claude session/weekly percentages and named
+  model scope/reset, Codex weekly remaining/reset. Other account activity continued
+  during the observations; the structured Claude model window was checked after
+  its adapter fix. Reports with live values stay under ignored `local/official-display`.
 - Inno Setup 7.1.0 downloaded from its official release. Authenticode status Valid,
   publisher Pyrsys B.V.; SHA-256 checked and pinned in Windows CI.
-- MIT source license, dependency license texts, provider/privacy/contribution docs,
-  release notes and a Windows Actions workflow are prepared. The workflow has not
-  run remotely and nothing has been publicly published.
+- MIT sources are public at https://github.com/ozkurkuran/ai-usage-viewer.
+  Private vulnerability reporting is enabled. [Windows CI](https://github.com/ozkurkuran/ai-usage-viewer/actions/runs/36341182250)
+  passed build, all 68 tests, packaging and UI smoke for source commit 38540c5.
+  No stable release is claimed.
 
 ## Remaining release work
 
-1. Exercise startup login and longer live runtime; observe
-   CPU/memory/handles with stated scope. Do not infer overnight stability from a
-   short smoke test.
-2. Resolve physical mixed-DPI, monitor removal and actual suspend/resume checks;
-   record official-client comparison and OpenRouter live limitations accurately.
+1. Extend the completed 30-minute resource observation to daily/overnight use.
+   Do not infer overnight stability from this bounded baseline.
+2. Resolve physical mixed-DPI, monitor removal, actual suspend/resume and live
+   OpenRouter standard/management-key checks.
 3. Complete the remaining gates in ACCEPTANCE_TR.md. Unavailable external/hardware
    evidence remains explicit rather than being marked passed by unit tests.
 

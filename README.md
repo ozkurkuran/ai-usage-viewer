@@ -9,6 +9,9 @@ fully validated stable v1.0. Observed tests and remaining release gates are in
 
 ## Türkçe hızlı başlangıç
 
+[Windows beta sürümleri](https://github.com/ozkurkuran/ai-usage-viewer/releases)
+sayfasından kurulum paketini veya portable ZIP'i indir.
+
 Portable ZIP'i bir klasöre çıkarıp **AIUsageViewer.exe** dosyasını aç veya
 **Setup.exe** paketini kullan. .NET SDK kurman gerekmez. Claude/Codex için ilgili
 resmî CLI uygulamasında giriş yapmış olmalısın. Ayarlardan bulunan kaynak

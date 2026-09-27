@@ -20,11 +20,9 @@ Do not attach production settings, `.credentials.json`, `auth.json`, `.secrets`,
 JSONL files or databases to a public issue. Project names and usage counts can
 also be sensitive. Use `--demo` for screenshots and synthetic repro cases.
 
-For a sensitive issue, use the repository's private vulnerability reporting
-channel after the public repository is created and that feature is enabled.
-No public reporting address is configured in this local pre-release yet. Until
-then, share only a non-sensitive description with the maintainer and request a
-private channel before sending details. Never post working credentials.
+For a sensitive issue, use [private vulnerability reporting](https://github.com/ozkurkuran/ai-usage-viewer/security/advisories/new).
+The repository's private reporting channel is enabled. Never put working
+credentials, private logs or reproduction data in a public issue.
 
 The initial Windows artifacts are unsigned. Checksums identify release content;
 they are not a publisher signature. No signed-release claim is made.
