@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../AiUsageViewer.Core/AiUsageViewer.Core.csproj" />
+  </ItemGroup>
+</Project>

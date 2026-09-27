@@ -1,0 +1,64 @@
+<Window x:Class="AiUsageViewer.App.DashboardWindow" x:Name="Root" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:AiUsageViewer.App"
+  Title="AI Usage Viewer" Style="{StaticResource {x:Type Window}}" Width="1180" Height="820" MinWidth="880" MinHeight="620" WindowStartupLocation="CenterScreen">
+  <Grid Background="{DynamicResource BackgroundBrush}"><Grid.ColumnDefinitions><ColumnDefinition Width="185" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+    <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource StrokeBrush}" BorderThickness="0,0,1,0" Padding="20,28,16,20">
+      <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,36"><TextBlock Text="◈" FontSize="32" Foreground="{DynamicResource AccentBrush}" /><TextBlock Text="AI Usage" FontSize="21" FontWeight="Bold" Margin="0,8,0,0" /><TextBlock Text="VIEWER" FontSize="10" Foreground="{DynamicResource MutedBrush}" Margin="1,4,0,0" /></StackPanel>
+        <StackPanel DockPanel.Dock="Bottom"><Button Content="{Binding L[settings]}" Command="{Binding OpenSettingsCommand}" Margin="0,0,0,12" /><TextBlock Text="{Binding L[privacy]}" Style="{StaticResource Muted}" FontSize="10" /></StackPanel>
+        <StackPanel>
+          <Button Content="{Binding L[overview]}" Command="{Binding NavigateCommand}" CommandParameter="overview" HorizontalContentAlignment="Left" Margin="0,0,0,8" />
+          <Button Content="{Binding L[subscriptions]}" Command="{Binding NavigateCommand}" CommandParameter="subscriptions" HorizontalContentAlignment="Left" Margin="0,0,0,8" />
+          <Button Content="{Binding L[models]}" Command="{Binding NavigateCommand}" CommandParameter="models" HorizontalContentAlignment="Left" Margin="0,0,0,8" />
+          <Button Content="{Binding L[projects]}" Command="{Binding NavigateCommand}" CommandParameter="projects" HorizontalContentAlignment="Left" Margin="0,0,0,8" />
+          <Button Content="{Binding L[sessions]}" Command="{Binding NavigateCommand}" CommandParameter="sessions" HorizontalContentAlignment="Left" />
+          <Button Content="OpenRouter" Command="{Binding OpenActivityCommand}" HorizontalContentAlignment="Left" Margin="0,8,0,0" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+    <Grid Grid.Column="1" Margin="28,26,28,20"><Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+      <DockPanel Margin="0,0,0,24">
+        <StackPanel><TextBlock Text="{Binding PageTitle}" FontSize="27" FontWeight="SemiBold" /><TextBlock Text="{Binding L[scope]}" Style="{StaticResource Muted}" Margin="0,8,0,0" TextWrapping="Wrap" MaxWidth="550" /></StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top"><Button Content="{Binding L[widget]}" Command="{Binding ShowWidgetCommand}" Margin="10,0,8,0" /><Button Content="{Binding L[refresh]}" Command="{Binding RefreshCommand}" /></StackPanel>
+      </DockPanel>
+      <DockPanel Grid.Row="1" Margin="0,0,0,22">
+        <StackPanel Orientation="Horizontal"><ComboBox ItemsSource="{Binding Ranges}" SelectedItem="{Binding Range}" AutomationProperties.Name="Date range" Margin="0,0,8,0" /><ComboBox ItemsSource="{Binding Tools}" SelectedItem="{Binding Tool}" AutomationProperties.Name="Tool filter" Margin="0,0,8,0" /><ComboBox ItemsSource="{Binding Models}" SelectedItem="{Binding Model}" AutomationProperties.Name="Model filter" MaxWidth="235" /></StackPanel>
+        <Button Content="{Binding L[export]}" Command="{Binding ExportCommand}" HorizontalAlignment="Right" />
+      </DockPanel>
+      <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="0,0,10,0">
+          <Border Background="#49345F" CornerRadius="6" Padding="10" Margin="0,0,0,14" Visibility="{Binding Demo,Converter={StaticResource BoolVisibility}}"><TextBlock Text="{Binding L[demo]}" Foreground="#E4CBFF" FontWeight="SemiBold" /></Border>
+          <StackPanel Visibility="{Binding IsOverview,Converter={StaticResource BoolVisibility}}">
+            <UniformGrid Columns="4" Margin="0,0,0,20">
+              <Border Style="{StaticResource Card}" Margin="0,0,10,0"><StackPanel><TextBlock Text="{Binding L[tokens]}" Style="{StaticResource Muted}" /><TextBlock Text="{Binding Total}" FontSize="28" FontWeight="SemiBold" Margin="0,10,0,0" Foreground="{DynamicResource AccentBrush}" /><TextBlock Text="{Binding TodayLabel}" Style="{StaticResource Muted}" Margin="0,8,0,0" /></StackPanel></Border>
+              <Border Style="{StaticResource Card}" Margin="0,0,10,0"><StackPanel><TextBlock Text="{Binding L[input]}" Style="{StaticResource Muted}" /><TextBlock Text="{Binding Input}" FontSize="25" FontWeight="SemiBold" Margin="0,10,0,0" /></StackPanel></Border>
+              <Border Style="{StaticResource Card}" Margin="0,0,10,0"><StackPanel><TextBlock Text="{Binding L[output]}" Style="{StaticResource Muted}" /><TextBlock Text="{Binding Output}" FontSize="25" FontWeight="SemiBold" Margin="0,10,0,0" /></StackPanel></Border>
+              <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="{Binding L[cache]}" Style="{StaticResource Muted}" /><TextBlock Text="{Binding Cache}" FontSize="25" FontWeight="SemiBold" Margin="0,10,0,0" /></StackPanel></Border>
+            </UniformGrid>
+            <DockPanel Margin="0,0,0,16"><TextBlock Text="{Binding L[tokenCost]}" Style="{StaticResource Muted}" /><TextBlock Text="{Binding EstimatedCost}" Foreground="{DynamicResource AccentBrush}" FontWeight="SemiBold" Margin="12,0" /><TextBlock Text="{Binding PriceCoverage}" Style="{StaticResource Muted}" TextTrimming="CharacterEllipsis" ToolTip="{Binding PriceCoverage}" /></DockPanel>
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="305" /></Grid.ColumnDefinitions>
+              <StackPanel Margin="0,0,18,0">
+                <Border Style="{StaticResource Card}" Margin="0,0,0,18"><StackPanel><DockPanel><TextBlock Text="{Binding L[activity]}" FontWeight="SemiBold" /><TextBlock Text="{Binding TodayLabel}" Style="{StaticResource Muted}" HorizontalAlignment="Right" /></DockPanel><local:UsageChart ItemsSource="{Binding Daily}" Height="160" Margin="0,15,0,0" AutomationProperties.Name="Daily token usage chart" /></StackPanel></Border>
+                <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="{Binding L[heatmap]}" FontWeight="SemiBold" Margin="0,0,0,12" /><ItemsControl ItemsSource="{Binding Heatmap}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="13" /></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Background="{Binding Color}" Height="11" CornerRadius="2" Margin="2" ToolTip="{Binding Tooltip}" AutomationProperties.Name="{Binding Tooltip}" /></DataTemplate></ItemsControl.ItemTemplate></ItemsControl></StackPanel></Border>
+              </StackPanel>
+              <StackPanel Grid.Column="1"><TextBlock Text="{Binding L[quota]}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,14" /><ItemsControl ItemsSource="{Binding Accounts}" ItemTemplate="{StaticResource WidgetAccountTemplate}" /></StackPanel>
+            </Grid>
+          </StackPanel>
+          <ItemsControl ItemsSource="{Binding Accounts}" ItemTemplate="{StaticResource AccountTemplate}" Visibility="{Binding IsSubscriptions,Converter={StaticResource BoolVisibility}}" />
+          <StackPanel Orientation="Horizontal" Margin="0,10" Visibility="{Binding HasFocus,Converter={StaticResource BoolVisibility}}"><Button Content="{Binding L[clearFocus]}" Command="{Binding ClearFocusCommand}" /><TextBlock Text="{Binding FocusLabel}" Margin="12,8" TextTrimming="CharacterEllipsis" MaxWidth="550" /></StackPanel>
+          <DataGrid x:Name="UsageGrid" ItemsSource="{Binding Groups}" Visibility="{Binding IsTable,Converter={StaticResource BoolVisibility}}" MinHeight="350" MouseDoubleClick="OpenGroup" KeyDown="GroupKeyDown">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" MinWidth="140" />
+              <DataGridTextColumn Header="Total tokens" Binding="{Binding Total}" Width="115" />
+              <DataGridTextColumn Header="Input" Binding="{Binding Input}" Width="95" />
+              <DataGridTextColumn Header="Output" Binding="{Binding Output}" Width="95" />
+              <DataGridTextColumn Header="Cache" Binding="{Binding Cache}" Width="95" />
+              <DataGridTextColumn Header="API ≈" Binding="{Binding Cost}" Width="135" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </StackPanel>
+      </ScrollViewer>
+      <StackPanel Grid.Row="3" Margin="0,16,0,0"><TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" TextWrapping="Wrap" /><TextBlock Text="{Binding Coverage}" Style="{StaticResource Muted}" FontSize="10" Margin="0,5,0,0" TextWrapping="Wrap" /></StackPanel>
+    </Grid>
+  </Grid>
+</Window>

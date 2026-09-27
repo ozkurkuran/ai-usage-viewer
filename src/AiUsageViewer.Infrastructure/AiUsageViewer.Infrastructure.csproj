@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0-windows</TargetFramework></PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Analytics/prices.json" LogicalName="AiUsageViewer.Prices.json" />
+    <ProjectReference Include="../AiUsageViewer.Core/AiUsageViewer.Core.csproj" />
+    <ProjectReference Include="../AiUsageViewer.Application/AiUsageViewer.Application.csproj" />
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
+  </ItemGroup>
+</Project>

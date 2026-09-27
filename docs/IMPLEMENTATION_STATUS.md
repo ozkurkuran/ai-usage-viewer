@@ -1,0 +1,94 @@
+# Implementation evidence
+
+Scope: ../../PLAN.md. No stable v1.0 or completed full-roadmap claim is made
+until the remaining release gates have actual evidence.
+
+| Phase | Implementation and evidence | Still required |
+|---|---|---|
+| P0: data validation | Synthetic parser tests; live Claude/Codex read-only quota succeeded | Explicit side-by-side official-client display comparison |
+| P1: application foundation | Independent WPF solution, SQLite, MVVM, three surfaces, TR/EN | Complete |
+| P2: usable local monitor | Integrated live UI validation, incremental collection, cached quota/failure handling and restart tests | Longer live soak / resume observation |
+| P3: analytics | Trend/heatmap, filters, project→session→model drill-down, versioned exact-model prices/overrides and CSV/JSON | Extended UI smoke passed; no separate feature blocker identified |
+| P4: OpenRouter | Independent key/credits/history, partial source retention, period/BYOK, permission, key-change and Retry-After tests | Live standard/management-key verification unavailable without a test key |
+| P5: Windows release | Customization, monitor placement, notifications/startup, licenses/docs/CI, portable ZIP and installer; clean Windows Sandbox lifecycle passed | Physical mixed-DPI, actual suspend/resume, startup login and longer runtime observation pending |
+
+## Completed evidence (2026-09-27)
+
+- .NET SDK 10.0.401 downloaded from Microsoft and SHA-512 verified. Runtime and
+  NuGet dependencies are local to the parent workspace's `.tools` directory.
+- Complete Release solution builds with zero warnings and zero errors.
+- Latest completed suite: **63 passed, 0 failed**, including synthetic/live
+  directory isolation and rejection of invalid HTTP credential characters.
+- Tests cover normalized token buckets, cumulative deltas/resets, copied logs,
+  streaming revisions, fork identity, partial lines, transactional cursors,
+  file replacement with unchanged length/mtime, time zones, dynamic quota windows,
+  read-only RPC sequence, retries/concurrency/cancellation, OpenRouter periods,
+  independent permissions, stale source retention, history replacement, pricing,
+  CSV formula escaping, DPAPI, notification persistence and schema migration.
+- Claude OAuth usage and Codex app-server both returned usable live quota windows.
+  Integrated `--validate-live` run passed at 2026-09-27T18:02:49Z: local records,
+  two account cards, both states Ready, all three windows rendered. No model calls,
+  reset redemptions or private screenshots. Private reports remain ignored.
+  A network-restricted run preserved cached windows and reported Unavailable.
+  Validation now records cached rendering and fresh quota success separately.
+- Initial large-history scan is background work. Profiling isolated a 38–53 second
+  delay to opening active-log read handles, independently reproduced in Python.
+  Metadata checks and reads/hashes were fast. A bounded content-handle cache with
+  metadata identity checks now uses explicit-offset reads. Measured same-process
+  repeat: three changed files in about **0.19 seconds**. Cold opens may still take
+  around forty seconds on this host; cached UI data is displayed while they warm.
+- Extended WPF smoke passed (`artifacts/suite-today/smoke-report.json`): three main
+  surfaces, project/session/model navigation, widget-only visibility, ordering,
+  remaining mode, TR/dark and EN/light settings, all five settings pages,
+  synthetic OpenRouter history and monitor clamping. Main Save commits pending
+  account/visibility/price changes; selected prices show their source and date.
+  Empty data has no invented cost/accounts, closing windows keeps the tray alive,
+  and the widget's today total/cost remain independent of every dashboard filter.
+- Render targets at 100/150/200% were generated. Actual connected display tested
+  was 3840×2112 work area at 96 DPI. This is not physical mixed-DPI coverage.
+- Smoke exposed and fixed transient null selections when replacing localized
+  ComboBox lists. Screenshots also led to better initial widget height, dark
+  scrollbars, readable light-theme quota colors and simple account/model labels.
+- Self-contained win-x64 packages built: portable ZIP ~78 MB, installer ~55 MB,
+  plus SHA256SUMS. Packaged smoke confirmed use of the included runtime.
+- Clean Windows Sandbox build 26100, with no dotnet on PATH, passed at
+  2026-09-27T17:44:11Z (`artifacts/sandbox-20260927-v2/sandbox-result.json`):
+  package file hashes, portable startup, per-user installation, installed startup,
+  restart history retention (632 synthetic records / 9,762,481 tokens), same-version
+  reinstall and uninstall. App files and its startup entry were removed; user
+  history remained. No host registry/startup setting was changed by this test.
+  This does not establish an upgrade from a previously released version.
+- Inno Setup 7.1.0 downloaded from its official release. Authenticode status Valid,
+  publisher Pyrsys B.V.; SHA-256 checked and pinned in Windows CI.
+- MIT source license, dependency license texts, provider/privacy/contribution docs,
+  release notes and a Windows Actions workflow are prepared. The workflow has not
+  run remotely and nothing has been publicly published.
+
+## Remaining release work
+
+1. Exercise startup login and longer live runtime; observe
+   CPU/memory/handles with stated scope. Do not infer overnight stability from a
+   short smoke test.
+2. Resolve physical mixed-DPI, monitor removal and actual suspend/resume checks;
+   record official-client comparison and OpenRouter live limitations accurately.
+3. Complete the remaining gates in ACCEPTANCE_TR.md. Unavailable external/hardware
+   evidence remains explicit rather than being marked passed by unit tests.
+
+See WINDOWS_QA.md for the detailed manual scenarios. Reference repositories are
+unchanged and not dependencies. Local account data, settings, databases, keys and
+private validation output must remain outside source/release packages.
+
+## Workspace commands
+
+```powershell
+$env:DOTNET_CLI_HOME = Join-Path $PWD '.tools/cli'
+$env:NUGET_PACKAGES = Join-Path $PWD '.tools/nuget'
+$env:DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE = 'true'
+& ./.tools/dotnet/dotnet.exe build app/AiUsageViewer.slnx -c Release --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false
+& ./.tools/dotnet/dotnet.exe test app/tests/AiUsageViewer.Tests -c Release --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false
+& app/scripts/package.ps1 -Dotnet (Join-Path $PWD '.tools/dotnet/dotnet.exe') -Iscc (Join-Path $PWD '.tools/inno/ISCC.exe') -SkipRestore
+& app/scripts/package-source.ps1
+```
+
+Use one MSBuild node with build/compiler servers disabled in this environment.
+Do not restart a live build merely because an output poll is empty.

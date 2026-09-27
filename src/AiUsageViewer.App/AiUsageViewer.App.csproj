@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>AIUsageViewer</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- WPF owns startup and DPI awareness; WinForms is used only for NotifyIcon/Screen. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../AiUsageViewer.Infrastructure/AiUsageViewer.Infrastructure.csproj" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <Using Include="System" /><Using Include="System.IO" /><Using Include="System.Linq" />
+    <Using Include="System.Collections.Generic" /><Using Include="System.Threading" /><Using Include="System.Threading.Tasks" />
+  </ItemGroup>
+</Project>

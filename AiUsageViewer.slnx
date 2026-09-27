@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AiUsageViewer.App/AiUsageViewer.App.csproj" />
+    <Project Path="src/AiUsageViewer.Application/AiUsageViewer.Application.csproj" />
+    <Project Path="src/AiUsageViewer.Core/AiUsageViewer.Core.csproj" />
+    <Project Path="src/AiUsageViewer.Diagnostics/AiUsageViewer.Diagnostics.csproj" />
+    <Project Path="src/AiUsageViewer.Infrastructure/AiUsageViewer.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AiUsageViewer.Tests/AiUsageViewer.Tests.csproj" />
+  </Folder>
+</Solution>

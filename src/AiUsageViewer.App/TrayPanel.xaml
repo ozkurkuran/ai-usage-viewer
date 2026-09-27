@@ -1,0 +1,8 @@
+<Window x:Class="AiUsageViewer.App.TrayPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Title="AI Usage Viewer quick view" Style="{StaticResource {x:Type Window}}" Width="385" Height="580" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" AllowsTransparency="True" Background="Transparent">
+  <Border Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource StrokeBrush}" BorderThickness="1" CornerRadius="14" Padding="18"><DockPanel>
+    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16"><TextBlock Text="AI Usage Viewer" FontSize="17" FontWeight="SemiBold" /><Button Content="{Binding L[refresh]}" Command="{Binding RefreshCommand}" HorizontalAlignment="Right" Padding="10,5" /></DockPanel>
+    <Button DockPanel.Dock="Bottom" Content="{Binding L[details]}" Click="DetailsClick" Margin="0,12,0,0" />
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><ItemsControl ItemsSource="{Binding Accounts}" ItemTemplate="{StaticResource AccountTemplate}" Margin="0,0,6,0" /></ScrollViewer>
+  </DockPanel></Border>
+</Window>

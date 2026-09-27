@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+.vs/
+artifacts/
+local/
+TestResults/
+*.user
+*.db
+*.db-shm
+*.db-wal
+*.secrets
+settings.json
+!settings.example.json
