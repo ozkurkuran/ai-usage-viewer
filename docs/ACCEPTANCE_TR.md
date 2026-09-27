@@ -33,7 +33,7 @@ boşluk içeren yollar çalıştı ve detay penceresi kendiliğinden açılmadı
 
 İlk veri aktarımından sonra 30 dakikalık normal arka plan gözlemi tamamlandı:
 232 ek tarama, 950 değişen dosya okuması, sıfır toplama hatası/kaynak uyarısı.
-Claude ve Codex kota bağlantıları Ready kaldı. Özel bellek 69–96 MiB aralığında,
+Gözlem sonunda Claude ve Codex kota bağlantıları Ready durumundaydı. Özel bellek 69–96 MiB aralığında,
 çalışma kümesi 335–396 MiB aralığındaydı; handle sayısı 921'den 847'ye indi.
 Bu ölçüm gece boyu kullanım veya bellek sızıntısı olmadığı kanıtı sayılmaz.
 
