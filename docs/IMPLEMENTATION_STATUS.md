@@ -142,6 +142,14 @@ until the remaining release gates have actual evidence.
   dark and light at 1×, 1.5× and 2× render scale
   (`artifacts/redesign/final-en|tr/views`). Physical-DPI switching is still a
   manual check.
+- 0.3.0-beta.4 / MSIX 0.3.4.0 (Store identity `Mikrofab.AiUsageNest`): self-contained
+  publish, portable ZIP, installer and MSIX built; the Store package no longer
+  carries the internal `docs/` folder. CI run 37158879391 passed. Clean Windows
+  Sandbox (build 26100, no dotnet on PATH) passed all 8 package checks including
+  the Windows widget provider COM activation, background start after a new logon
+  and uninstall with package-data removal (`artifacts/msix-check-b4/msix-result.json`).
+  Store screenshots with the new design: `artifacts/store-screenshots-b4-en|tr`.
+  Upload file: `artifacts/msix-store-b4/AIUsageViewer-0.3.0-beta.4-win-x64.msix`.
 
 ### Stable release
 

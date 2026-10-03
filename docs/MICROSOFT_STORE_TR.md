@@ -53,7 +53,7 @@ Partner Center'da **Store listings → Add/remove languages** bölümünden
 ve `productFeatures` alanlarını ilgili form alanlarına aktar. JSON dosyaları
 doğrudan içe aktarılabilen Partner Center CSV'si değildir; toplu aktarımda
 önce Partner Center'ın verdiği CSV şablonunu dışa aktar ve alanlarını doldur.
-İlk gönderimde **What's new** boş bırakılır.
+**What's new** isteğe bağlıdır; ilk gönderimde boş bırakılabilir.
 [Microsoft'un listeleme belgesi](https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/add-and-edit-store-listing-info)
 bu alanları, CSV aktarımını ve her dil için açıklama ile ekran görüntüsü
 gereksinimini açıklar.
@@ -245,11 +245,12 @@ kendin alırsın.
 > tokens, subscription quota windows and reset times in a compact widget, a
 > notification-area panel and a detailed dashboard.
 >
-> • Local token history for Claude Code and Codex: input, output and cache tokens by model, project and session, with a trend chart and a 13-week heatmap.
+> • Local token history for Claude Code and Codex: input, output and cache tokens by model, project and session, with an hourly usage chart, a 13-week heatmap and top models.
 > • Subscription quota and reset times for Claude and Codex accounts signed in with the official command-line tools.
+> • Pace marker on every quota bar: rows read Under, On or Ahead of pace, turn amber when ahead and red at 90% or more, and warn with a forecast such as “At this pace it runs out Mon ~06:30” before the reset. Optional Pace alert notification.
 > • OpenRouter key limits and spend, account credits and completed-day activity history, depending on key permissions.
 > • Estimated API-equivalent cost using dated, sourced prices and your own overrides; CSV and JSON export.
-> • Desktop widget with card ordering, compact mode, used or remaining view, opacity, dark and light themes, and 12 language options with automatic Windows language selection.
+> • Compact or standard desktop widget and tray flyout, with card ordering, used or remaining view, opacity, dark, light and System themes, and 12 language options with automatic Windows language selection.
 > • Optional notifications for quota thresholds, resets and low balance; optional start with Windows.
 >
 > Private by design: usage data stays on your device. There is no app account,
@@ -260,7 +261,7 @@ kendin alırsın.
 > not affiliated with or endorsed by Anthropic, OpenAI or OpenRouter. The Claude
 > quota source is experimental. Estimated cost is not your subscription bill.
 
-**What's new in this version:** First Microsoft Store release.
+**What's new in this version:** New design with pace markers and run-out forecasts on quota bars, plus an optional pace alert.
 
 **Product features** (her satır ayrı alan):
 - Today's tokens and subscription quotas in a desktop widget
@@ -269,7 +270,9 @@ kendin alırsın.
 - OpenRouter key usage, credits and daily activity
 - Estimated API-equivalent cost with sourced prices
 - CSV and JSON export
-- Dark and light themes, 12 language options
+- Dark, light and System themes, 12 language options
+- Pace marker and run-out forecast on quota bars, with an optional Pace alert
+- Dashboard with hourly usage chart, 13-week heatmap and top models
 - No telemetry; data stays on your device
 
 **Screenshots** (`artifacts/store-screenshots`, sırasıyla) ve açıklamaları:
@@ -308,11 +311,12 @@ taslakları `packaging/store/listings/` altındadır.
 > abonelik kota pencerelerini ve yenilenme zamanlarını widget'ta, bildirim alanı
 > panelinde ve ayrıntılı detay ekranında gösterir.
 >
-> • Claude Code ve Codex için model, proje ve oturum bazında input/output/cache token geçmişi, trend grafiği ve 13 haftalık ısı haritası.
+> • Claude Code ve Codex için model, proje ve oturum bazında input/output/cache token geçmişi, saatlik kullanım grafiği, 13 haftalık ısı haritası ve en çok kullanılan modeller.
 > • Resmî CLI ile giriş yapılmış Claude ve Codex hesaplarının kota pencereleri ve yenilenme zamanları.
+> • Her kota çubuğunda hız işareti: satırlar Hızın altında, Hızında veya Hızın önünde der, hızın önündeyken kehribar, %90 ve üzerinde kırmızı olur ve yenilenmeden önce tükenme tahminiyle uyarır. İsteğe bağlı Hız uyarısı bildirimi.
 > • OpenRouter anahtar limiti/harcaması, hesap bakiyesi ve tamamlanmış gün geçmişi (anahtar yetkisine bağlı).
 > • Kaynaklı ve tarihli fiyatlarla tahmini API karşılığı, kullanıcı tarifeleri, CSV/JSON dışa aktarma.
-> • Kart sırası, sıkı görünüm, kullanılan/kalan gösterimi, opaklık, açık/koyu tema ve Windows diline göre otomatik seçilen 12 dil seçeneği.
+> • Kompakt veya standart masaüstü widget'ı ve bildirim alanı paneli; kart sırası, kullanılan/kalan gösterimi, opaklık, koyu, açık ve Sistem teması ve Windows diline göre otomatik seçilen 12 dil seçeneği.
 > • İsteğe bağlı kota/yenilenme/düşük bakiye bildirimleri ve Windows ile başlatma.
 >
 > Gizlilik öncelikli: kullanım verileri cihazında kalır. Uygulama hesabı,
@@ -324,7 +328,7 @@ taslakları `packaging/store/listings/` altındadır.
 > değildir ve onlar tarafından onaylanmamıştır. Claude kota kaynağı deneyseldir.
 > Tahmini maliyet abonelik faturası değildir.
 
-**Bu sürümdeki yenilikler:** İlk Microsoft Store sürümü.
+**Bu sürümdeki yenilikler:** Kota çubuklarında hız işaretleri ve tükenme tahminleriyle yeni tasarım; ayrıca isteğe bağlı hız uyarısı.
 
 **Ürün özellikleri:**
 - Masaüstü widget'ında bugünkü tokenlar ve abonelik kotaları
@@ -333,7 +337,9 @@ taslakları `packaging/store/listings/` altındadır.
 - OpenRouter anahtar kullanımı, bakiye ve günlük etkinlik
 - Kaynaklı fiyatlarla tahmini API karşılığı
 - CSV ve JSON dışa aktarma
-- Açık ve koyu tema, 12 dil seçeneği
+- Koyu, açık ve Sistem teması, 12 dil seçeneği
+- Kota çubuklarında hız işareti ve tükenme tahmini; isteğe bağlı Hız uyarısı
+- Saatlik kullanım grafiği, 13 haftalık ısı haritası ve en çok kullanılan modellerle gösterge paneli
 - Telemetri yok; veriler cihazında kalır
 
 **Ekran görüntüleri** (`artifacts/store-screenshots-tr`, sırasıyla):

@@ -87,7 +87,8 @@ Copy-Item -LiteralPath $WidgetPublishDir -Destination (Join-Path $layout 'Widget
 Copy-Item -LiteralPath (Join-Path $repo 'packaging\msix\WidgetAssets') -Destination (Join-Path $layout 'WidgetAssets') -Recurse
 New-Item -ItemType Directory -Path (Join-Path $layout 'Public') -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $repo 'README.md'),(Join-Path $repo 'THIRD_PARTY_NOTICES.md'),(Join-Path $repo 'PRIVACY.md') -Destination $layout -Force
-Copy-Item -Path (Join-Path $repo 'docs\*') -Destination (Join-Path $layout 'docs') -Recurse -Force
+# Store packages ship license texts (licenses/) but not the internal project docs.
+Remove-Item -LiteralPath (Join-Path $layout 'docs') -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath (Join-Path $layout 'files.sha256.json') -ErrorAction SilentlyContinue
 $forbidden=Get-ChildItem -LiteralPath $layout -Recurse -File | Where-Object { $_.Extension -in '.db','.secrets','.jsonl','.pfx' -or $_.Name -eq 'settings.json' }
 if($forbidden) { throw 'Private data unexpectedly present in package layout.' }

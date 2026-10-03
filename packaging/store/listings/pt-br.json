@@ -2,13 +2,15 @@
   "language": "pt-br",
   "productName": "Ai UsageNest",
   "shortDescription": "Veja o uso de Claude Code, Codex e OpenRouter em um só lugar, com widget na área de trabalho e histórico local.",
-  "description": "Ai UsageNest é um aplicativo gratuito e de código aberto da Mikrofab para acompanhar o uso de Claude Code, Codex e OpenRouter. Veja tokens processados, limites de assinatura, redefinições, histórico de projetos e sessões e custos API estimados.\n\nPara dados reais, instale e use Claude Code ou Codex, ou adicione uma chave API OpenRouter. O acesso aos limites exige uma conta autenticada. Você pode experimentar primeiro com dados de exemplo. O histórico fica neste PC e as chaves API salvas são criptografadas pelo Windows. Os dados vêm de registros locais e conexões com os provedores.\n\nA interface suporta 12 idiomas e segue o idioma de exibição do Windows por padrão. Você pode alterar o idioma, o tema claro/escuro e as opções do widget nas Configurações. Os limites dependem do provedor; a fonte de limites Claude é experimental. O custo API estimado não é a sua fatura de assinatura. Ai UsageNest não é afiliado à Anthropic, OpenAI ou OpenRouter.",
+  "description": "Para dados reais, instale e use Claude Code ou Codex, ou adicione uma chave API OpenRouter. O acesso aos limites exige uma conta autenticada. Você pode experimentar primeiro com dados de exemplo. O histórico fica neste PC e as chaves API salvas são criptografadas pelo Windows. Os dados vêm de registros locais e conexões com os provedores.\n\nAi UsageNest é um aplicativo gratuito e de código aberto da Mikrofab para acompanhar o uso de Claude Code, Codex e OpenRouter. Veja tokens processados, limites de assinatura com previsão de ritmo, redefinições, histórico de projetos e sessões e custos API estimados.\n\nAs barras de limite têm um marcador de ritmo que mostra quanto da janela de sessão ou semanal já passou. Cada linha indica Abaixo do ritmo, No ritmo ou Acima do ritmo, fica âmbar quando você está acima do ritmo e vermelha a partir de 90%, e avisa antes da redefinição com uma previsão de quando o limite acaba. Uma notificação opcional de Alerta de ritmo avisa quando o ritmo atual esgotaria um limite antes de ele ser redefinido.\n\nO painel redesenhado traz um gráfico de uso por hora, um mapa de calor de 13 semanas e os modelos mais usados. Um widget de área de trabalho compacto ou padrão e um painel rápido na área de notificação mantêm o uso à vista.\n\nA interface suporta 12 idiomas e segue o idioma de exibição do Windows por padrão. Você pode alterar o idioma, o tema (escuro, claro ou do sistema) e as opções do widget nas Configurações. Os limites dependem do provedor; a fonte de limites Claude é experimental. O custo API estimado não é a sua fatura de assinatura. Ai UsageNest não é afiliado à Anthropic, OpenAI ou OpenRouter.",
   "productFeatures": [
     "Tokens processados",
     "Uso da assinatura",
+    "Previsão de ritmo · Alerta",
     "Projetos · Sessões",
+    "Gráfico por hora · Mapa de calor",
     "Widget",
-    "Escuro · Claro",
+    "Escuro · Claro · Sistema",
     "Idioma do sistema"
   ],
   "privacyPolicyUrl": "https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md",

@@ -2,13 +2,15 @@
   "language": "cs-cz",
   "productName": "Ai UsageNest",
   "shortDescription": "Sledujte využití Claude Code, Codex a OpenRouter na jednom místě, s widgetem na ploše a místní historií.",
-  "description": "Ai UsageNest je bezplatná desktopová aplikace s otevřeným zdrojovým kódem od Mikrofab pro sledování využití Claude Code, Codex a OpenRouter. Zobrazuje zpracované tokeny, kvóty předplatného, časy obnovení, historii projektů a relací a odhad nákladů API.\n\nPro skutečná data nainstalujte a používejte Claude Code nebo Codex nebo přidejte klíč API OpenRouter. Kvóty vyžadují přihlášený účet. Nejprve můžete vyzkoušet ukázková data. Historie zůstává na tomto PC a uložené klíče API šifruje Windows. Data pocházejí z místních protokolů a připojení k poskytovatelům.\n\nRozhraní podporuje 12 jazyků a ve výchozím stavu používá jazyk Windows. Jazyk, světlý/tmavý motiv a možnosti widgetu lze změnit v Nastavení. Kvóty závisí na poskytovateli; zdroj kvót Claude je experimentální. Odhad nákladů API není faktura za předplatné. Ai UsageNest není spojen s Anthropic, OpenAI ani OpenRouter.",
+  "description": "Pro skutečná data nainstalujte a používejte Claude Code nebo Codex nebo přidejte klíč API OpenRouter. Kvóty vyžadují přihlášený účet. Nejprve můžete vyzkoušet ukázková data. Historie zůstává na tomto PC a uložené klíče API šifruje Windows. Data pocházejí z místních protokolů a připojení k poskytovatelům.\n\nAi UsageNest je bezplatná desktopová aplikace s otevřeným zdrojovým kódem od Mikrofab pro sledování využití Claude Code, Codex a OpenRouter. Zobrazuje zpracované tokeny, kvóty předplatného s předpovědí tempa, časy obnovení, historii projektů a relací a odhad nákladů API.\n\nPruhy kvót mají značku tempa, která ukazuje, jak velká část okna relace nebo týdne už uplynula. Každý řádek uvádí Pod tempem, V tempu nebo Nad tempem, při překročení tempa se zbarví jantarově, od 90 % červeně a před obnovením varuje předpovědí, kdy kvóta dojde. Volitelné upozornění na tempo vás informuje, když by současné tempo vyčerpalo kvótu před obnovením.\n\nPřepracovaný přehledový panel přidává hodinový graf využití, teplotní mapu za 13 týdnů a nejpoužívanější modely. Kompaktní nebo standardní widget na ploše a panel v oznamovací oblasti udržují využití na očích.\n\nRozhraní podporuje 12 jazyků a ve výchozím stavu používá jazyk Windows. Jazyk, motiv (tmavý, světlý nebo systémový) a možnosti widgetu lze změnit v Nastavení. Kvóty závisí na poskytovateli; zdroj kvót Claude je experimentální. Odhad nákladů API není faktura za předplatné. Ai UsageNest není spojen s Anthropic, OpenAI ani OpenRouter.",
   "productFeatures": [
     "Zpracované tokeny",
     "Využití předplatného",
+    "Předpověď tempa · Upozornění",
     "Projekty · Relace",
+    "Hodinový graf · Teplotní mapa",
     "Widget",
-    "Tmavý · Světlý",
+    "Tmavý · Světlý · Systémový",
     "Jazyk systému"
   ],
   "privacyPolicyUrl": "https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md",

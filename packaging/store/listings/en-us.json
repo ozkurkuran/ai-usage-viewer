@@ -2,13 +2,15 @@
   "language": "en-us",
   "productName": "Ai UsageNest",
   "shortDescription": "See Claude Code, Codex and OpenRouter usage in one place, with a desktop widget and local history.",
-  "description": "Ai UsageNest is a free, open-source desktop monitor by Mikrofab for Claude Code, Codex and OpenRouter usage. View processed tokens, subscription quotas, reset times, project and session history, and estimated API costs.\n\nFor real usage data, install and use Claude Code or Codex, or add an OpenRouter API key. Quota access requires an authenticated account. You can explore the app with sample data first. Usage history is kept on this PC, and saved API keys are encrypted by Windows. The app uses local logs and provider connections to show your data.\n\nThe interface supports 12 languages and follows the Windows display language by default. Language, light/dark theme and widget options can be changed in Settings. Quotas depend on provider availability; the Claude quota source is experimental. Estimated API cost is not your subscription bill. Ai UsageNest is not affiliated with Anthropic, OpenAI or OpenRouter.",
+  "description": "For real usage data, install and use Claude Code or Codex, or add an OpenRouter API key. Quota access requires an authenticated account. You can explore the app with sample data first. Usage history is kept on this PC, and saved API keys are encrypted by Windows. The app uses local logs and provider connections to show your data.\n\nAi UsageNest is a free, open-source desktop monitor by Mikrofab for Claude Code, Codex and OpenRouter usage. View processed tokens, subscription quotas with pace forecasts, reset times, project and session history, and estimated API costs.\n\nQuota bars carry a pace marker that shows how much of the session or weekly window has passed. Each row reads Under, On or Ahead of pace, turns amber when you are ahead and red at 90% or more, and warns you before the reset with a forecast such as “At this pace it runs out Mon ~06:30”. An optional Pace alert notification tells you when the current pace would use up a quota before it resets.\n\nThe redesigned dashboard adds an hourly usage chart, a 13-week heatmap and your top models. A compact or standard desktop widget and a tray flyout keep your usage in view.\n\nThe interface supports 12 languages and follows the Windows display language by default. Language, theme (dark, light or System) and widget options can be changed in Settings. Quotas depend on provider availability; the Claude quota source is experimental. Estimated API cost is not your subscription bill. Ai UsageNest is not affiliated with Anthropic, OpenAI or OpenRouter.",
   "productFeatures": [
     "Processed tokens",
     "Subscription usage",
+    "Pace forecast · Alert",
     "Projects · Sessions",
+    "Hourly chart · Heatmap",
     "Widget",
-    "Dark · Light",
+    "Dark · Light · System",
     "System language"
   ],
   "privacyPolicyUrl": "https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md",

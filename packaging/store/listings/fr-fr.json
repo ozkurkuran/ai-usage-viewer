@@ -2,13 +2,15 @@
   "language": "fr-fr",
   "productName": "Ai UsageNest",
   "shortDescription": "Consultez l’utilisation de Claude Code, Codex et OpenRouter au même endroit, avec un widget de bureau et un historique local.",
-  "description": "Ai UsageNest est un outil de bureau gratuit et open source de Mikrofab pour suivre l’utilisation de Claude Code, Codex et OpenRouter. Consultez les tokens traités, les quotas d’abonnement, les réinitialisations, l’historique des projets et sessions et les coûts API estimés.\n\nPour des données réelles, installez et utilisez Claude Code ou Codex, ou ajoutez une clé API OpenRouter. L’accès aux quotas nécessite un compte authentifié. Vous pouvez d’abord essayer avec des données d’exemple. L’historique reste sur ce PC et Windows chiffre les clés API enregistrées. Les données proviennent des journaux locaux et des connexions aux fournisseurs.\n\nL’interface prend en charge 12 langues et suit par défaut la langue d’affichage de Windows. La langue, le thème clair/sombre et les options du widget se règlent dans les paramètres. Les quotas dépendent du fournisseur ; la source de quota Claude est expérimentale. Le coût API estimé n’est pas votre facture d’abonnement. Ai UsageNest n’est pas affilié à Anthropic, OpenAI ou OpenRouter.",
+  "description": "Pour des données réelles, installez et utilisez Claude Code ou Codex, ou ajoutez une clé API OpenRouter. L’accès aux quotas nécessite un compte authentifié. Vous pouvez d’abord essayer avec des données d’exemple. L’historique reste sur ce PC et Windows chiffre les clés API enregistrées. Les données proviennent des journaux locaux et des connexions aux fournisseurs.\n\nAi UsageNest est un outil de bureau gratuit et open source de Mikrofab pour suivre l’utilisation de Claude Code, Codex et OpenRouter. Consultez les tokens traités, les quotas d’abonnement avec prévision de rythme, les réinitialisations, l’historique des projets et sessions et les coûts API estimés.\n\nLes barres de quota comportent un repère de rythme qui indique quelle part de la fenêtre de session ou hebdomadaire s’est écoulée. Chaque ligne affiche Sous le rythme, Dans le rythme ou En avance sur le rythme, devient ambre si vous êtes en avance et rouge à partir de 90 %, et vous prévient avant la réinitialisation avec une prévision de l’épuisement du quota. Une notification facultative d’alerte de rythme vous avertit lorsque le rythme actuel épuiserait un quota avant sa réinitialisation.\n\nLe tableau de bord repensé ajoute un graphique d’utilisation par heure, une carte thermique sur 13 semaines et les modèles les plus utilisés. Un widget de bureau compact ou standard et un volet de la zone de notification gardent l’utilisation sous les yeux.\n\nL’interface prend en charge 12 langues et suit par défaut la langue d’affichage de Windows. La langue, le thème (sombre, clair ou système) et les options du widget se règlent dans les paramètres. Les quotas dépendent du fournisseur ; la source de quota Claude est expérimentale. Le coût API estimé n’est pas votre facture d’abonnement. Ai UsageNest n’est pas affilié à Anthropic, OpenAI ou OpenRouter.",
   "productFeatures": [
     "Tokens traités",
     "Utilisation de l’abonnement",
+    "Prévision de rythme · Alerte",
     "Projets · Sessions",
+    "Graphique horaire · Carte thermique",
     "Widget",
-    "Sombre · Clair",
+    "Sombre · Clair · Système",
     "Langue du système"
   ],
   "privacyPolicyUrl": "https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md",

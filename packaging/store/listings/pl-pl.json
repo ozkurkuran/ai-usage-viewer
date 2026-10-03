@@ -2,13 +2,15 @@
   "language": "pl-pl",
   "productName": "Ai UsageNest",
   "shortDescription": "Zobacz użycie Claude Code, Codex i OpenRouter w jednym miejscu, z widżetem pulpitu i lokalną historią.",
-  "description": "Ai UsageNest to bezpłatna aplikacja Mikrofab z otwartym kodem do śledzenia użycia Claude Code, Codex i OpenRouter. Pokazuje przetworzone tokeny, limity subskrypcji, terminy resetu, historię projektów i sesji oraz szacunkowe koszty API.\n\nAby zobaczyć rzeczywiste dane, zainstaluj i używaj Claude Code lub Codex albo dodaj klucz API OpenRouter. Dostęp do limitów wymaga zalogowanego konta. Najpierw możesz wypróbować dane przykładowe. Historia pozostaje na tym komputerze, a zapisane klucze API są szyfrowane przez Windows. Dane pochodzą z lokalnych dzienników i połączeń z dostawcami.\n\nInterfejs obsługuje 12 języków i domyślnie używa języka Windows. Język, jasny/ciemny motyw i opcje widżetu można zmienić w Ustawieniach. Limity zależą od dostawcy; źródło limitów Claude jest eksperymentalne. Szacunkowy koszt API nie jest fakturą za subskrypcję. Ai UsageNest nie jest powiązany z Anthropic, OpenAI ani OpenRouter.",
+  "description": "Aby zobaczyć rzeczywiste dane, zainstaluj i używaj Claude Code lub Codex albo dodaj klucz API OpenRouter. Dostęp do limitów wymaga zalogowanego konta. Najpierw możesz wypróbować dane przykładowe. Historia pozostaje na tym komputerze, a zapisane klucze API są szyfrowane przez Windows. Dane pochodzą z lokalnych dzienników i połączeń z dostawcami.\n\nAi UsageNest to bezpłatna aplikacja Mikrofab z otwartym kodem do śledzenia użycia Claude Code, Codex i OpenRouter. Pokazuje przetworzone tokeny, limity subskrypcji z prognozą tempa, terminy resetu, historię projektów i sesji oraz szacunkowe koszty API.\n\nPaski limitów mają znacznik tempa, który pokazuje, jaka część okna sesji lub tygodnia już minęła. Każdy wiersz wskazuje Poniżej tempa, W tempie lub Powyżej tempa, robi się bursztynowy, gdy jesteś powyżej tempa, i czerwony od 90 %, a przed resetem ostrzega prognozą, kiedy limit się skończy. Opcjonalne powiadomienie Alert tempa informuje, gdy obecne tempo wyczerpałoby limit przed resetem.\n\nPrzeprojektowany panel główny dodaje godzinowy wykres użycia, mapę cieplną z 13 tygodni i najczęściej używane modele. Kompaktowy lub standardowy widżet na pulpicie oraz panel w obszarze powiadomień trzymają użycie w zasięgu wzroku.\n\nInterfejs obsługuje 12 języków i domyślnie używa języka Windows. Język, motyw (ciemny, jasny lub systemowy) i opcje widżetu można zmienić w Ustawieniach. Limity zależą od dostawcy; źródło limitów Claude jest eksperymentalne. Szacunkowy koszt API nie jest fakturą za subskrypcję. Ai UsageNest nie jest powiązany z Anthropic, OpenAI ani OpenRouter.",
   "productFeatures": [
     "Przetworzone tokeny",
     "Wykorzystanie subskrypcji",
+    "Prognoza tempa · Alert",
     "Projekty · Sesje",
+    "Wykres godzinowy · Mapa cieplna",
     "Widżet",
-    "Ciemny · Jasny",
+    "Ciemny · Jasny · Systemowy",
     "Język systemu"
   ],
   "privacyPolicyUrl": "https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md",

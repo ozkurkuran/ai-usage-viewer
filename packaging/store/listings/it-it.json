@@ -2,13 +2,15 @@
   "language": "it-it",
   "productName": "Ai UsageNest",
   "shortDescription": "Consulta l’utilizzo di Claude Code, Codex e OpenRouter in un solo posto, con widget desktop e cronologia locale.",
-  "description": "Ai UsageNest è un’app desktop gratuita e open source di Mikrofab per monitorare l’utilizzo di Claude Code, Codex e OpenRouter. Visualizza token elaborati, quote di abbonamento, ripristini, cronologia di progetti e sessioni e costi API stimati.\n\nPer dati reali, installa e usa Claude Code o Codex oppure aggiungi una chiave API OpenRouter. L’accesso alle quote richiede un account autenticato. Puoi prima provare i dati di esempio. La cronologia resta su questo PC e Windows crittografa le chiavi API salvate. I dati provengono dai registri locali e dalle connessioni ai fornitori.\n\nL’interfaccia supporta 12 lingue e segue la lingua di Windows per impostazione predefinita. Puoi cambiare lingua, tema chiaro/scuro e opzioni del widget nelle Impostazioni. Le quote dipendono dal fornitore; la fonte delle quote Claude è sperimentale. Il costo API stimato non è la fattura dell’abbonamento. Ai UsageNest non è affiliato ad Anthropic, OpenAI o OpenRouter.",
+  "description": "Per dati reali, installa e usa Claude Code o Codex oppure aggiungi una chiave API OpenRouter. L’accesso alle quote richiede un account autenticato. Puoi prima provare i dati di esempio. La cronologia resta su questo PC e Windows crittografa le chiavi API salvate. I dati provengono dai registri locali e dalle connessioni ai fornitori.\n\nAi UsageNest è un’app desktop gratuita e open source di Mikrofab per monitorare l’utilizzo di Claude Code, Codex e OpenRouter. Visualizza token elaborati, quote di abbonamento con previsione del ritmo, ripristini, cronologia di progetti e sessioni e costi API stimati.\n\nLe barre delle quote mostrano un indicatore di ritmo che segnala quanta parte della finestra di sessione o settimanale è già trascorsa. Ogni riga riporta Sotto il ritmo, In linea o Sopra il ritmo, diventa ambra quando sei sopra il ritmo e rossa dal 90 %, e avvisa prima del ripristino con una previsione di quando la quota finirà. Una notifica facoltativa di Avviso di ritmo ti segnala quando il ritmo attuale esaurirebbe una quota prima del ripristino.\n\nLa dashboard ridisegnata aggiunge un grafico orario dell’utilizzo, una mappa di calore di 13 settimane e i modelli più usati. Un widget desktop compatto o standard e un pannello nell’area di notifica tengono l’utilizzo sotto controllo.\n\nL’interfaccia supporta 12 lingue e segue la lingua di Windows per impostazione predefinita. Puoi cambiare lingua, tema (scuro, chiaro o di sistema) e opzioni del widget nelle Impostazioni. Le quote dipendono dal fornitore; la fonte delle quote Claude è sperimentale. Il costo API stimato non è la fattura dell’abbonamento. Ai UsageNest non è affiliato ad Anthropic, OpenAI o OpenRouter.",
   "productFeatures": [
     "Token elaborati",
     "Utilizzo dell’abbonamento",
+    "Previsione del ritmo · Avviso",
     "Progetti · Sessioni",
+    "Grafico orario · Mappa di calore",
     "Widget",
-    "Scuro · Chiaro",
+    "Scuro · Chiaro · Sistema",
     "Lingua del sistema"
   ],
   "privacyPolicyUrl": "https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md",

@@ -2,13 +2,15 @@
   "language": "de-de",
   "productName": "Ai UsageNest",
   "shortDescription": "Claude Code, Codex und OpenRouter an einem Ort: Nutzungsdaten, Desktop-Widget und lokaler Verlauf.",
-  "description": "Ai UsageNest ist ein kostenloser Open-Source-Desktopmonitor von Mikrofab für die Nutzung von Claude Code, Codex und OpenRouter. Sieh verarbeitete Tokens, Abonnementkontingente, Zurücksetzungszeiten, Projekt- und Sitzungsverläufe sowie geschätzte API-Kosten.\n\nFür echte Nutzungsdaten musst du Claude Code oder Codex installieren und verwenden oder einen OpenRouter-API-Schlüssel hinzufügen. Kontingente erfordern ein angemeldetes Konto. Du kannst die App zunächst mit Beispieldaten erkunden. Der Verlauf bleibt auf diesem PC; gespeicherte API-Schlüssel werden von Windows verschlüsselt. Die Daten stammen aus lokalen Protokollen und Verbindungen zu den Anbietern.\n\nDie Oberfläche unterstützt 12 Sprachen und folgt standardmäßig der Windows-Anzeigesprache. Sprache, helles/dunkles Design und Widget-Optionen lassen sich in den Einstellungen ändern. Kontingente hängen vom Anbieter ab; die Claude-Kontingentquelle ist experimentell. Geschätzte API-Kosten sind keine Abonnementrechnung. Ai UsageNest ist nicht mit Anthropic, OpenAI oder OpenRouter verbunden.",
+  "description": "Für echte Nutzungsdaten musst du Claude Code oder Codex installieren und verwenden oder einen OpenRouter-API-Schlüssel hinzufügen. Kontingente erfordern ein angemeldetes Konto. Du kannst die App zunächst mit Beispieldaten erkunden. Der Verlauf bleibt auf diesem PC; gespeicherte API-Schlüssel werden von Windows verschlüsselt. Die Daten stammen aus lokalen Protokollen und Verbindungen zu den Anbietern.\n\nAi UsageNest ist ein kostenloser Open-Source-Desktopmonitor von Mikrofab für die Nutzung von Claude Code, Codex und OpenRouter. Sieh verarbeitete Tokens, Abonnementkontingente mit Tempo-Prognose, Zurücksetzungszeiten, Projekt- und Sitzungsverläufe sowie geschätzte API-Kosten.\n\nDie Kontingentbalken tragen eine Tempo-Markierung, die zeigt, wie viel vom Sitzungs- oder Wochenfenster bereits verstrichen ist. Jede Zeile zeigt Unter dem Tempo, Im Tempo oder Über dem Tempo, wird bernsteinfarben, wenn du über dem Tempo liegst, und ab 90 % rot und warnt vor dem Zurücksetzen mit einer Prognose, wann das Kontingent aufgebraucht ist. Ein optionaler Tempo-Hinweis benachrichtigt dich, wenn das aktuelle Tempo ein Kontingent vor dem Zurücksetzen aufbrauchen würde.\n\nDas neu gestaltete Dashboard bietet ein Stundendiagramm der Nutzung, eine 13-Wochen-Heatmap und die meistgenutzten Modelle. Ein kompaktes oder standardmäßiges Desktop-Widget und ein Flyout im Infobereich halten die Nutzung im Blick.\n\nDie Oberfläche unterstützt 12 Sprachen und folgt standardmäßig der Windows-Anzeigesprache. Sprache, Design (dunkel, hell oder System) und Widget-Optionen lassen sich in den Einstellungen ändern. Kontingente hängen vom Anbieter ab; die Claude-Kontingentquelle ist experimentell. Geschätzte API-Kosten sind keine Abonnementrechnung. Ai UsageNest ist nicht mit Anthropic, OpenAI oder OpenRouter verbunden.",
   "productFeatures": [
     "Verarbeitete Tokens",
     "Abonnementnutzung",
+    "Tempo-Prognose · Hinweis",
     "Projekte · Sitzungen",
+    "Stundendiagramm · Heatmap",
     "Widget",
-    "Dunkel · Hell",
+    "Dunkel · Hell · System",
     "Systemsprache"
   ],
   "privacyPolicyUrl": "https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md",
