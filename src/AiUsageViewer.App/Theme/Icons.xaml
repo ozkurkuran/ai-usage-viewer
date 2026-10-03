@@ -1,0 +1,37 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Tabler Icons outline set (MIT, Pawel Kuna), 24×24 viewbox; drawn with a 1.75 stroke by the Icon control. -->
+  <StreamGeometry x:Key="Icon.Nav.Overview">M 5 4 h 4 a 1 1 0 0 1 1 1 v 6 a 1 1 0 0 1 -1 1 h -4 a 1 1 0 0 1 -1 -1 v -6 a 1 1 0 0 1 1 -1 M 5 16 h 4 a 1 1 0 0 1 1 1 v 2 a 1 1 0 0 1 -1 1 h -4 a 1 1 0 0 1 -1 -1 v -2 a 1 1 0 0 1 1 -1 M 15 12 h 4 a 1 1 0 0 1 1 1 v 6 a 1 1 0 0 1 -1 1 h -4 a 1 1 0 0 1 -1 -1 v -6 a 1 1 0 0 1 1 -1 M 15 4 h 4 a 1 1 0 0 1 1 1 v 2 a 1 1 0 0 1 -1 1 h -4 a 1 1 0 0 1 -1 -1 v -2 a 1 1 0 0 1 1 -1</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Subscriptions">M 3 12 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 M 11 12 a 1 1 0 1 0 2 0 a 1 1 0 1 0 -2 0 M 13.41 10.59 l 2.59 -2.59 M 7 12 a 5 5 0 0 1 5 -5</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Models">M 12 3 l 8 4.5 l 0 9 l -8 4.5 l -8 -4.5 l 0 -9 l 8 -4.5 M 12 12 l 8 -4.5 M 12 12 l 0 9 M 12 12 l -8 -4.5</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Projects">M 5 4 h 4 l 3 3 h 7 a 2 2 0 0 1 2 2 v 8 a 2 2 0 0 1 -2 2 h -14 a 2 2 0 0 1 -2 -2 v -11 a 2 2 0 0 1 2 -2</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Sessions">M 8 9 l 3 3 l -3 3 M 13 15 l 3 0 M 3 6 a 2 2 0 0 1 2 -2 h 14 a 2 2 0 0 1 2 2 v 12 a 2 2 0 0 1 -2 2 h -14 a 2 2 0 0 1 -2 -2 l 0 -12</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.OpenRouter">M 3 19 a 2 2 0 1 0 4 0 a 2 2 0 0 0 -4 0 M 19 7 a 2 2 0 1 0 0 -4 a 2 2 0 0 0 0 4 M 11 19 h 5.5 a 3.5 3.5 0 0 0 0 -7 h -8 a 3.5 3.5 0 0 1 0 -7 h 4.5</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Settings">M 12 6 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0 M 4 6 l 8 0 M 16 6 l 4 0 M 6 12 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0 M 4 12 l 2 0 M 10 12 l 10 0 M 15 18 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0 M 4 18 l 11 0 M 19 18 l 1 0</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Appearance">M 12 21 a 9 9 0 0 1 0 -18 c 4.97 0 9 3.582 9 8 c 0 1.06 -.474 2.078 -1.318 2.828 c -.844 .75 -1.989 1.172 -3.182 1.172 h -2.5 a 2 2 0 0 0 -1 3.75 a 1.3 1.3 0 0 1 -1 2.25 M 7.5 10.5 a 1 1 0 1 0 2 0 a 1 1 0 1 0 -2 0 M 11.5 7.5 a 1 1 0 1 0 2 0 a 1 1 0 1 0 -2 0 M 15.5 10.5 a 1 1 0 1 0 2 0 a 1 1 0 1 0 -2 0</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Accounts">M 3 12 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 M 9 10 a 3 3 0 1 0 6 0 a 3 3 0 1 0 -6 0 M 6.168 18.849 a 4 4 0 0 1 3.832 -2.849 h 4 a 4 4 0 0 1 3.834 2.855</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.DataSources">M 4 6 a 8 3 0 1 0 16 0 a 8 3 0 1 0 -16 0 M 4 6 v 6 a 8 3 0 0 0 16 0 v -6 M 4 12 v 6 a 8 3 0 0 0 16 0 v -6</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Prices">M 6.5 7.5 a 1 1 0 1 0 2 0 a 1 1 0 1 0 -2 0 M 3 6 v 5.172 a 2 2 0 0 0 .586 1.414 l 7.71 7.71 a 2.41 2.41 0 0 0 3.408 0 l 5.592 -5.592 a 2.41 2.41 0 0 0 0 -3.408 l -7.71 -7.71 a 2 2 0 0 0 -1.414 -.586 h -5.172 a 3 3 0 0 0 -3 3</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Nav.Notifications">M 10 5 a 2 2 0 1 1 4 0 a 7 7 0 0 1 4 6 v 3 a 4 4 0 0 0 2 3 h -16 a 4 4 0 0 0 2 -3 v -3 a 7 7 0 0 1 4 -6 M 9 17 v 1 a 3 3 0 0 0 6 0 v -1</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Refresh">M 20 11 a 8.1 8.1 0 0 0 -15.5 -2 m -.5 -4 v 4 h 4 M 4 13 a 8.1 8.1 0 0 0 15.5 2 m .5 4 v -4 h -4</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Widget">M 11 19 h -6 a 2 2 0 0 1 -2 -2 v -10 a 2 2 0 0 1 2 -2 h 14 a 2 2 0 0 1 2 2 v 4 M 14 15 a 1 1 0 0 1 1 -1 h 5 a 1 1 0 0 1 1 1 v 3 a 1 1 0 0 1 -1 1 h -5 a 1 1 0 0 1 -1 -1 l 0 -3</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Download">M 4 17 v 2 a 2 2 0 0 0 2 2 h 12 a 2 2 0 0 0 2 -2 v -2 M 7 11 l 5 5 l 5 -5 M 12 4 l 0 12</StreamGeometry>
+  <StreamGeometry x:Key="Icon.ChevronDown">M 6 9 l 6 6 l 6 -6</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Close">M 18 6 l -12 12 M 6 6 l 12 12</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Info">M 3 12 a 9 9 0 1 0 18 0 a 9 9 0 0 0 -18 0 M 12 9 h .01 M 11 12 h 1 v 4 h 1</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Alert">M 12 9 v 4 M 10.363 3.591 l -8.106 13.534 a 1.914 1.914 0 0 0 1.636 2.871 h 16.214 a 1.914 1.914 0 0 0 1.636 -2.87 l -8.106 -13.536 a 1.914 1.914 0 0 0 -3.274 0 M 12 16 h .01</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Check">M 5 12 l 5 5 l 10 -10</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Plus">M 12 5 l 0 14 M 5 12 l 14 0</StreamGeometry>
+  <StreamGeometry x:Key="Icon.ArrowRight">M 5 12 l 14 0 M 13 18 l 6 -6 M 13 6 l 6 6</StreamGeometry>
+  <StreamGeometry x:Key="Icon.ArrowUp">M 12 5 l 0 14 M 18 11 l -6 -6 M 6 11 l 6 -6</StreamGeometry>
+  <StreamGeometry x:Key="Icon.ArrowDown">M 12 5 l 0 14 M 18 13 l -6 6 M 6 13 l 6 6</StreamGeometry>
+  <StreamGeometry x:Key="Icon.ExternalLink">M 12 6 h -6 a 2 2 0 0 0 -2 2 v 10 a 2 2 0 0 0 2 2 h 10 a 2 2 0 0 0 2 -2 v -6 M 11 13 l 9 -9 M 15 4 h 5 v 5</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Search">M 3 10 a 7 7 0 1 0 14 0 a 7 7 0 1 0 -14 0 M 21 21 l -6 -6</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Trash">M 4 7 l 16 0 M 10 11 l 0 6 M 14 11 l 0 6 M 5 7 l 1 12 a 2 2 0 0 0 2 2 h 8 a 2 2 0 0 0 2 -2 l 1 -12 M 9 7 v -3 a 1 1 0 0 1 1 -1 h 4 a 1 1 0 0 1 1 1 v 3</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Power">M 7 6 a 7.75 7.75 0 1 0 10 0 M 12 4 l 0 8</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Chart">M 4 19 l 16 0 M 4 15 l 4 -6 l 4 2 l 4 -5 l 4 4</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Link">M 9 15 l 6 -6 M 11 6 l .463 -.536 a 5 5 0 0 1 7.071 7.072 l -.534 .464 M 13 18 l -.397 .534 a 5.068 5.068 0 0 1 -7.127 0 a 4.972 4.972 0 0 1 0 -7.071 l .524 -.463</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Loader">M 12 3 a 9 9 0 1 0 9 9</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Eye">M 10 12 a 2 2 0 1 0 4 0 a 2 2 0 0 0 -4 0 M 21 12 c -2.4 4 -5.4 6 -9 6 c -3.6 0 -6.6 -2 -9 -6 c 2.4 -4 5.4 -6 9 -6 c 3.6 0 6.6 2 9 6</StreamGeometry>
+  <StreamGeometry x:Key="Icon.FolderOpen">M 5 19 l 2.757 -7.351 a 1 1 0 0 1 .936 -.649 h 12.307 a 1 1 0 0 1 .986 1.164 l -.996 5.211 a 2 2 0 0 1 -1.964 1.625 h -14.026 a 2 2 0 0 1 -2 -2 v -11 a 2 2 0 0 1 2 -2 h 4 l 3 3 h 7 a 2 2 0 0 1 2 2 v 2</StreamGeometry>
+  <StreamGeometry x:Key="Icon.Key">M 16.555 3.843 l 3.602 3.602 a 2.877 2.877 0 0 1 0 4.069 l -2.643 2.643 a 2.877 2.877 0 0 1 -4.069 0 l -.301 -.301 l -6.558 6.558 a 2 2 0 0 1 -1.239 .578 l -.175 .008 h -1.172 a 1 1 0 0 1 -.993 -.883 l -.007 -.117 v -1.172 a 2 2 0 0 1 .467 -1.284 l .119 -.13 l .414 -.414 h 2 v -2 h 2 v -2 l 2.144 -2.144 l -.301 -.301 a 2.877 2.877 0 0 1 0 -4.069 l 2.643 -2.643 a 2.877 2.877 0 0 1 4.069 0 M 15 9 h .01</StreamGeometry>
+</ResourceDictionary>

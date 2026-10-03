@@ -2,9 +2,10 @@ using AiUsageViewer.Core;
 
 namespace AiUsageViewer.Application;
 
-public enum UsageAlertKind { Usage, Reset, LowBalance }
-public sealed record UsageAlert(UsageAlertKind Kind,string AccountLabel,string Metric,decimal? Value=null,string? Currency=null);
-public sealed record AlertWindow(decimal? Used,DateTimeOffset? ResetsAt,decimal? NotifiedThreshold);
+public enum UsageAlertKind { Usage, Reset, LowBalance, Pace }
+public sealed record UsageAlert(UsageAlertKind Kind,string AccountLabel,string Metric,decimal? Value=null,string? Currency=null,DateTimeOffset? ResetsAt=null,DateTimeOffset? RunsOutAt=null);
+// PaceNotified is a later addition; older saved state reads it as false.
+public sealed record AlertWindow(decimal? Used,DateTimeOffset? ResetsAt,decimal? NotifiedThreshold,bool PaceNotified=false);
 public sealed record AlertAccount(AccountProfile Account,DateTimeOffset ObservedAt,
     Dictionary<string,AlertWindow> Windows,Dictionary<string,decimal> Balances);
 
@@ -30,12 +31,20 @@ public sealed class NotificationEvaluator
             var notified=newPeriod||old?.Used<settings.NotifyUsagePercent?null:old?.NotifiedThreshold;
             if(settings.NotificationsEnabled&&window.UsedPercent is { } used&&used>=settings.NotifyUsagePercent&&notified!=settings.NotifyUsagePercent)
             {
-                alerts.Add(new(UsageAlertKind.Usage,status.Account.Label,window.Label,used));notified=settings.NotifyUsagePercent;
+                alerts.Add(new(UsageAlertKind.Usage,status.Account.Label,window.Label,used,ResetsAt:window.ResetsAt));notified=settings.NotifyUsagePercent;
             }
             if(settings.NotificationsEnabled&&settings.NotifyResets&&old?.ResetsAt is { } oldReset&&oldReset<=snapshot.ObservedAt&&
                 window.ResetsAt>oldReset&&window.UsedPercent<old.Used)
-                alerts.Add(new(UsageAlertKind.Reset,status.Account.Label,window.Label));
-            windows[window.Id]=new(window.UsedPercent,window.ResetsAt,notified);
+                alerts.Add(new(UsageAlertKind.Reset,status.Account.Label,window.Label,window.UsedPercent));
+            // Pace: once per quota window, when the current rate would use it up before the reset.
+            // It is an early warning, so it stays quiet once the usage threshold alert applies.
+            var paceNotified=!newPeriod&&old?.PaceNotified==true;
+            if(settings.NotificationsEnabled&&settings.NotifyPace&&!paceNotified&&window.UsedPercent<settings.NotifyUsagePercent&&
+                QuotaPace.Read(window,snapshot.ObservedAt) is { RunsOutAt: { } runsOut } reading)
+            {
+                alerts.Add(new(UsageAlertKind.Pace,status.Account.Label,window.Label,(decimal)reading.Used,ResetsAt:window.ResetsAt,RunsOutAt:runsOut));paceNotified=true;
+            }
+            windows[window.Id]=new(window.UsedPercent,window.ResetsAt,notified,paceNotified);
         }
         foreach(var balance in snapshot.Money.Where(m=>m.Id=="balance"&&m.Currency=="USD"))
         {

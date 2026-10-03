@@ -18,6 +18,7 @@ public sealed record AppSettings
     public bool ShowWidgetOnLaunch { get; init; } = true;
     public bool NotificationsEnabled { get; init; }
     public bool NotifyResets { get; init; }
+    public bool NotifyPace { get; init; } = true;
     public decimal NotifyUsagePercent { get; init; } = 90;
     public decimal NotifyLowBalance { get; init; } = 5;
     public WindowPlacement WidgetPlacement { get; init; } = new();

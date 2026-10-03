@@ -129,6 +129,20 @@ until the remaining release gates have actual evidence.
   matches Partner Center (`artifacts/msix-check-store/msix-result.json`).
 - WACK needs an elevated session and was not run here.
 
+### UI redesign (4 October 2026)
+
+- Release build 0 warnings / 0 errors; 118/118 tests (adds pace, row status,
+  forecast cut-offs, remaining-mode inversion, stale rule, EN/TR formatting and
+  pace-alert tests).
+- Smoke suite (`scripts/smoke.ps1 -Suite -Views -Language en|tr`) passed with
+  29 checks each, including pace marker position, forecast only when ahead,
+  remaining-mode inversion, stale rendering, widget without scrollbar, first-run
+  checklist only with zero records, Settings Save of all dirty sections and no
+  API key field for Claude/ChatGPT. 96 screenshots per language: every view in
+  dark and light at 1×, 1.5× and 2× render scale
+  (`artifacts/redesign/final-en|tr/views`). Physical-DPI switching is still a
+  manual check.
+
 ### Stable release
 
 1. Extend the completed 30-minute resource observation to daily/overnight use.

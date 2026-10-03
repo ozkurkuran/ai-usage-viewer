@@ -19,7 +19,7 @@ internal static class NativePlacement
     {
         var handle=new WindowInteropHelper(window).EnsureHandle();GetWindowRect(handle,out var rect);
         var screen=Forms.Screen.FromHandle(handle);var scale=Scale(handle);
-        return new(window.Left,window.Top,window.Width,window.Height,screen.DeviceName,
+        return new(window.Left,window.Top,Width(window),Height(window),screen.DeviceName,
             (rect.Left-screen.WorkingArea.Left)/scale,(rect.Top-screen.WorkingArea.Top)/scale);
     }
     public static void Restore(Window window,WindowPlacement placement)
@@ -30,12 +30,16 @@ internal static class NativePlacement
         // Move first so GetDpiForWindow observes the destination monitor's DPI.
         SetWindowPos(handle,0,area.Left+20,area.Top+20,0,0,NoActivate|NoZOrder|NoSize);
         var scale=Scale(handle);
-        Place(handle,area,area.Left+placement.OffsetX*scale,area.Top+placement.OffsetY*scale,window.Width*scale,window.Height*scale);
+        Place(handle,area,area.Left+placement.OffsetX*scale,area.Top+placement.OffsetY*scale,Width(window)*scale,Height(window)*scale,Sized(window));
     }
+    // Windows that size to their content keep WPF's size; only the position is set.
+    private static bool Sized(Window window)=>window.SizeToContent!=SizeToContent.Manual;
+    private static double Width(Window window)=>double.IsNaN(window.Width)?Math.Max(1,window.ActualWidth):window.Width;
+    private static double Height(Window window)=>double.IsNaN(window.Height)?Math.Max(1,window.ActualHeight):window.Height;
     public static void EnsureVisible(Window window)
     {
         var handle=new WindowInteropHelper(window).EnsureHandle();if(!GetWindowRect(handle,out var rect)) return;
-        Place(handle,Forms.Screen.FromHandle(handle).WorkingArea,rect.Left,rect.Top,rect.Right-rect.Left,rect.Bottom-rect.Top);
+        Place(handle,Forms.Screen.FromHandle(handle).WorkingArea,rect.Left,rect.Top,rect.Right-rect.Left,rect.Bottom-rect.Top,Sized(window));
     }
     public static void AtCursor(Window window)
     {
@@ -43,12 +47,12 @@ internal static class NativePlacement
         var area=Forms.Screen.FromPoint(cursor).WorkingArea;
         SetWindowPos(handle,0,area.Left+20,area.Top+20,0,0,NoActivate|NoZOrder|NoSize);
         var scale=Scale(handle);
-        Place(handle,area,cursor.X-window.Width*scale,cursor.Y-window.Height*scale,window.Width*scale,window.Height*scale);
+        Place(handle,area,cursor.X-Width(window)*scale,cursor.Y-Height(window)*scale,Width(window)*scale,Height(window)*scale,Sized(window));
     }
-    private static void Place(nint handle,System.Drawing.Rectangle area,double left,double top,double width,double height)
+    private static void Place(nint handle,System.Drawing.Rectangle area,double left,double top,double width,double height,bool keepSize=false)
     {
         var w=Math.Clamp((int)Math.Round(width),1,area.Width);var h=Math.Clamp((int)Math.Round(height),1,area.Height);
         var x=Math.Clamp((int)Math.Round(left),area.Left,area.Right-w);var y=Math.Clamp((int)Math.Round(top),area.Top,area.Bottom-h);
-        SetWindowPos(handle,0,x,y,w,h,NoActivate|NoZOrder);
+        SetWindowPos(handle,0,x,y,w,h,NoActivate|NoZOrder|(keepSize?NoSize:0));
     }
 }

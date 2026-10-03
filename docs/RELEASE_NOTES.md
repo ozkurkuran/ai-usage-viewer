@@ -1,3 +1,21 @@
+# 0.3.0-beta.4 — UI redesign
+
+- New presentation layer: dark and light token themes (plus System), bundled Geist /
+  Geist Mono fonts, Tabler outline icons, shared controls (quota bar with pace
+  marker, token-mix bar, toggle switch, segmented control, status pill).
+- Quota rows show pace: a marker for time passed in the window, Under / On / Ahead
+  of pace notes, amber or red bars when ahead or at 90 %+, and a run-out forecast.
+  "Show quota as: Left" inverts both bar and marker. Accounts whose refresh failed
+  or whose data is older than twice the refresh interval are marked stale.
+- Rebuilt overview (hourly / daily / weekly stacked history, 13-week heatmap,
+  top models, subscription rail, first-run checklist), Models / Projects /
+  Sessions tables with breadcrumbs and filter chips, an OpenRouter page with a
+  daily spend chart, widget (standard and compact), tray flyout and Settings.
+- Settings: one Save with per-section unsaved-changes state, provider-specific
+  account fields (API key only for OpenRouter), new Pace alert, notification
+  previews built from the real templates.
+- All new strings are translated in the 12 supported languages.
+
 # 0.3.0-beta.3 — Microsoft Store preparation
 
 - Renamed the product to **Ai UsageNest**, published by Mikrofab. The executable

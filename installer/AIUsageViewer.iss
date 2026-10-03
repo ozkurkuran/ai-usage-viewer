@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "0.3.0-beta.3"
+  #define AppVersion "0.3.0-beta.4"
 #endif
 #ifndef PublishDir
   #define PublishDir "..\artifacts\publish\win-x64"

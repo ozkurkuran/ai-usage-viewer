@@ -34,6 +34,18 @@ public sealed class WindowsBehaviorTests : IDisposable
         Assert.Equal(UsageAlertKind.Reset,Assert.Single(alerts).Kind);
         Assert.Empty(evaluator.Observe(Status(2,71,Now.AddHours(6)),Settings));
     }
+    [Fact] public void PaceAlertFiresOncePerWindowBeforeTheUsageThreshold()
+    {
+        // 5 h session, 1 h left (80 % elapsed): 70 % used is under pace, nothing to say.
+        var evaluator=new NotificationEvaluator();Assert.Empty(evaluator.Observe(Status(70),Settings));
+        // Same window, 3 h left (40 % elapsed): 60 % used runs out ~1 h before the reset.
+        var pace=Assert.Single(evaluator.Observe(Status(60,1,Now.AddHours(3)),Settings));
+        Assert.Equal(UsageAlertKind.Pace,pace.Kind);Assert.NotNull(pace.RunsOutAt);Assert.True(pace.RunsOutAt<pace.ResetsAt);
+        Assert.Empty(evaluator.Observe(Status(65,2,Now.AddHours(3)),Settings));
+        // A new window may warn again; turning the option off silences it.
+        Assert.Single(evaluator.Observe(Status(60,400,Now.AddHours(11)),Settings),a=>a.Kind==UsageAlertKind.Pace);
+        Assert.Empty(new NotificationEvaluator().Observe(Status(60,1,Now.AddHours(3)),Settings with { NotifyPace=false }));
+    }
     [Fact] public void LowBalanceTriggersOnCrossingAndIgnoresMissingPartialData()
     {
         var evaluator=new NotificationEvaluator();Assert.Empty(evaluator.Observe(Status(10,balance:10),Settings));

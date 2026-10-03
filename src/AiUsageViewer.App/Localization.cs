@@ -9,4 +9,5 @@ public sealed class Localization(string language)
     private readonly UiText text=new(language);
     public string Language=>text.Language;
     public string this[string key]=>text[key];
+    public bool Has(string key)=>text[key]!=key;
 }

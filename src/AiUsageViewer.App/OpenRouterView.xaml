@@ -1,0 +1,79 @@
+<UserControl x:Class="AiUsageViewer.App.OpenRouterView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="clr-namespace:AiUsageViewer.App" x:Name="Root">
+  <UserControl.Resources>
+    <Style x:Key="Head" TargetType="TextBlock"><Setter Property="FontSize" Value="{StaticResource FontSize.Control}" /><Setter Property="Foreground" Value="{DynamicResource Text.Muted}" /><Setter Property="VerticalAlignment" Value="Center" /></Style>
+    <Style x:Key="Num" TargetType="TextBlock"><Setter Property="HorizontalAlignment" Value="Right" /><Setter Property="VerticalAlignment" Value="Center" /><Setter Property="Foreground" Value="{DynamicResource Text.Secondary}" /></Style>
+  </UserControl.Resources>
+  <StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="0,0,0,18">
+      <ComboBox x:Name="AccountChoice" ItemsSource="{Binding AccountList}" SelectedItem="{Binding SelectedAccount}" DisplayMemberPath="Label" local:Ui.Prefix="{Binding L[accountPrefix]}"
+                AutomationProperties.Name="{Binding L[accountPrefix]}" MinWidth="240" />
+      <TextBlock Text="{Binding RangeText}" Foreground="{DynamicResource Text.Muted}" FontSize="{StaticResource FontSize.Control}" VerticalAlignment="Center" Margin="16,0,0,0" />
+    </StackPanel>
+    <Border Style="{StaticResource Callout.Info}" Margin="0,0,0,20">
+      <DockPanel>
+        <local:Icon Data="{StaticResource Icon.Info}" Size="17" Foreground="{DynamicResource Accent.Text}" VerticalAlignment="Top" Margin="0,1,12,0" />
+        <TextBlock Text="{Binding L[activityCallout]}" TextWrapping="Wrap" Foreground="{DynamicResource Text.Secondary}" />
+      </DockPanel>
+    </Border>
+    <Border Style="{StaticResource Callout.Warn}" Margin="0,0,0,20" Visibility="{Binding HasStatus,Converter={StaticResource BoolVisibility}}">
+      <DockPanel>
+        <local:Icon Data="{StaticResource Icon.Alert}" Size="16" Foreground="{DynamicResource Warn.CalloutText}" VerticalAlignment="Top" Margin="0,1,10,0" />
+        <TextBlock Text="{Binding StatusText}" TextWrapping="Wrap" Foreground="{DynamicResource Warn.CalloutText}" />
+      </DockPanel>
+    </Border>
+    <UniformGrid x:Name="Summary" Columns="4" Margin="0,0,-20,20">
+      <Border Style="{StaticResource Card}" Padding="22,20" Margin="0,0,20,0"><StackPanel><TextBlock Text="{Binding L[spendLabel]}" Style="{StaticResource Head}" /><TextBlock Text="{Binding Spend}" Style="{StaticResource Text.Kpi}" Margin="0,8,0,4" /><TextBlock Text="{Binding L[reportedByOpenRouter]}" Style="{StaticResource Text.Caption}" FontSize="{StaticResource FontSize.Control}" /></StackPanel></Border>
+      <Border Style="{StaticResource Card}" Padding="22,20" Margin="0,0,20,0"><StackPanel><TextBlock Text="{Binding L[byokFees]}" Style="{StaticResource Head}" /><TextBlock Text="{Binding Byok}" Style="{StaticResource Text.Kpi}" Margin="0,8,0,4" /><TextBlock Text="{Binding L[bringYourOwnKey]}" Style="{StaticResource Text.Caption}" FontSize="{StaticResource FontSize.Control}" /></StackPanel></Border>
+      <Border Style="{StaticResource Card}" Padding="22,20" Margin="0,0,20,0"><StackPanel><TextBlock Text="{Binding L[requests]}" Style="{StaticResource Head}" /><TextBlock Text="{Binding Requests}" Style="{StaticResource Text.Kpi}" Margin="0,8,0,4" /><TextBlock Text="{Binding RequestsNote}" Style="{StaticResource Text.Caption}" FontSize="{StaticResource FontSize.Control}" /></StackPanel></Border>
+      <Border Style="{StaticResource Card}" Padding="22,20" Margin="0,0,20,0"><StackPanel><TextBlock Text="{Binding L[tokensLabel]}" Style="{StaticResource Head}" /><TextBlock Text="{Binding Tokens}" Style="{StaticResource Text.Kpi}" Margin="0,8,0,4" /><TextBlock Text="{Binding TokensNote}" Style="{StaticResource Text.Caption}" FontSize="{StaticResource FontSize.Control}" /></StackPanel></Border>
+    </UniformGrid>
+    <Border Style="{StaticResource Card}" Padding="24,22" Margin="0,0,0,20">
+      <StackPanel>
+        <TextBlock Text="{Binding L[dailySpend]}" Style="{StaticResource Text.CardTitle}" />
+        <TextBlock Text="{Binding L[last30Utc]}" FontSize="{StaticResource FontSize.Control}" Foreground="{DynamicResource Text.Muted}" Margin="0,4,0,16" />
+        <local:SpendChart Bars="{Binding Bars}" Format="{Binding Format,ElementName=Root}" Labels="{Binding L}" Height="240" AutomationProperties.Name="{Binding L[dailySpend]}" />
+      </StackPanel>
+    </Border>
+    <Border Style="{StaticResource Card}" Padding="0">
+      <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Focusable="False">
+        <StackPanel MinWidth="820">
+          <Border Background="{DynamicResource Bg.CardInset}" CornerRadius="14,14,0,0" Height="52" Padding="28,0">
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="150" /><ColumnDefinition Width="*" /><ColumnDefinition Width="110" /><ColumnDefinition Width="110" /><ColumnDefinition Width="100" /><ColumnDefinition Width="110" /><ColumnDefinition Width="110" /></Grid.ColumnDefinitions>
+              <StackPanel Orientation="Horizontal"><TextBlock Text="{Binding L[date]}" Style="{StaticResource Head}" Foreground="{DynamicResource Text.Primary}" FontWeight="SemiBold" /><local:Icon Data="{StaticResource Icon.ArrowDown}" Size="14" Foreground="{DynamicResource Accent.Text}" Margin="4,0,0,0" VerticalAlignment="Center" /></StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding L[modelColumn]}" Style="{StaticResource Head}" />
+              <TextBlock Grid.Column="2" Text="{Binding L[input]}" Style="{StaticResource Head}" HorizontalAlignment="Right" />
+              <TextBlock Grid.Column="3" Text="{Binding L[output]}" Style="{StaticResource Head}" HorizontalAlignment="Right" />
+              <TextBlock Grid.Column="4" Text="{Binding L[requests]}" Style="{StaticResource Head}" HorizontalAlignment="Right" />
+              <TextBlock Grid.Column="5" Text="{Binding L[spendLabel]}" Style="{StaticResource Head}" HorizontalAlignment="Right" />
+              <TextBlock Grid.Column="6" Text="BYOK" Style="{StaticResource Head}" HorizontalAlignment="Right" />
+            </Grid>
+          </Border>
+          <ItemsControl ItemsSource="{Binding Rows}" Focusable="False">
+            <ItemsControl.ItemTemplate><DataTemplate>
+              <Border BorderBrush="{DynamicResource Border.Row}" BorderThickness="0,1,0,0" Padding="28,0" MinHeight="60">
+                <Grid VerticalAlignment="Center">
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="150" /><ColumnDefinition Width="*" /><ColumnDefinition Width="110" /><ColumnDefinition Width="110" /><ColumnDefinition Width="100" /><ColumnDefinition Width="110" /><ColumnDefinition Width="110" /></Grid.ColumnDefinitions>
+                  <TextBlock Text="{Binding Day}" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="1" Text="{Binding Model}" Style="{StaticResource Text.Mono}" FontSize="{StaticResource FontSize.Body}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding Model}" />
+                  <TextBlock Grid.Column="2" Text="{Binding Input}" Style="{StaticResource Num}" />
+                  <TextBlock Grid.Column="3" Text="{Binding Output}" Style="{StaticResource Num}" />
+                  <TextBlock Grid.Column="4" Text="{Binding Requests}" Style="{StaticResource Num}" />
+                  <TextBlock Grid.Column="5" Text="{Binding Spend}" Style="{StaticResource Num}" Foreground="{DynamicResource Text.Primary}" FontWeight="SemiBold" />
+                  <TextBlock Grid.Column="6" Text="{Binding Byok}" Style="{StaticResource Num}" />
+                </Grid>
+              </Border>
+            </DataTemplate></ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Border BorderBrush="{DynamicResource Border.Row}" BorderThickness="0,1,0,0" Padding="28,16">
+            <DockPanel>
+              <TextBlock DockPanel.Dock="Right" Text="{Binding UpdatedText}" Style="{StaticResource Text.Caption}" FontSize="{StaticResource FontSize.Control}" />
+              <TextBlock Text="{Binding L[daysHidden]}" Style="{StaticResource Text.Caption}" FontSize="{StaticResource FontSize.Control}" />
+            </DockPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+    </Border>
+  </StackPanel>
+</UserControl>

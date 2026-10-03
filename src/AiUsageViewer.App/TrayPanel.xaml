@@ -1,8 +1,40 @@
 <Window x:Class="AiUsageViewer.App.TrayPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  Title="Ai UsageNest quick view" Style="{StaticResource {x:Type Window}}" Width="385" Height="580" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" AllowsTransparency="True" Background="Transparent">
-  <Border Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource StrokeBrush}" BorderThickness="1" CornerRadius="14" Padding="18"><DockPanel>
-    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16"><TextBlock Text="Ai UsageNest" FontSize="17" FontWeight="SemiBold" /><Button Content="{Binding L[refresh]}" Command="{Binding RefreshCommand}" HorizontalAlignment="Right" Padding="10,5" /></DockPanel>
-    <Button DockPanel.Dock="Bottom" Content="{Binding L[details]}" Click="DetailsClick" Margin="0,12,0,0" />
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><ItemsControl ItemsSource="{Binding Accounts}" ItemTemplate="{StaticResource AccountTemplate}" Margin="0,0,6,0" /></ScrollViewer>
-  </DockPanel></Border>
+  xmlns:local="clr-namespace:AiUsageViewer.App"
+  Title="Ai UsageNest quick view" Style="{StaticResource {x:Type Window}}" Width="380" SizeToContent="Height" WindowStyle="None" ResizeMode="NoResize"
+  ShowInTaskbar="False" Topmost="True" AllowsTransparency="True" Background="Transparent">
+  <Border Background="{DynamicResource Bg.Surface}" BorderBrush="{DynamicResource Border.Window}" BorderThickness="1" CornerRadius="16">
+    <StackPanel>
+      <DockPanel Height="60" Margin="18,0,12,0">
+        <Button DockPanel.Dock="Right" Style="{StaticResource IconButton.Widget}" local:Ui.Icon="{StaticResource Icon.Refresh}" Command="{Binding RefreshCommand}"
+                ToolTip="{Binding L[refreshAll]}" AutomationProperties.Name="{Binding L[refreshAll]}" />
+        <local:StatusPill DockPanel.Dock="Right" Small="True" Kind="{Binding PillKind}" Text="{Binding PillText}" Margin="0,0,8,0" VerticalAlignment="Center" />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+          <local:LogoMark Size="20" />
+          <TextBlock Text="Ai UsageNest" FontSize="{StaticResource FontSize.Body}" FontWeight="SemiBold" Margin="10,0,0,0" VerticalAlignment="Center" />
+        </StackPanel>
+      </DockPanel>
+      <Border BorderBrush="{DynamicResource Border.Card}" BorderThickness="0,1,0,0">
+        <ScrollViewer x:Name="AccountScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False" Margin="18,0,18,0">
+          <ItemsControl ItemsSource="{Binding WidgetAccounts}" ItemTemplate="{StaticResource TrayAccount}" Focusable="False" />
+        </ScrollViewer>
+      </Border>
+      <DockPanel Margin="18,14,18,16">
+        <TextBlock DockPanel.Dock="Right" FontSize="{StaticResource FontSize.Control}" Foreground="{DynamicResource Accent.TextStrong}" Visibility="{Binding ShowCost,Converter={StaticResource BoolVisibility}}" ToolTip="{Binding WidgetPriceCoverage}">
+          <Run Text="{Binding WidgetCost,Mode=OneWay}" /> <Run Text="{Binding L[apiShort],Mode=OneWay}" />
+        </TextBlock>
+        <TextBlock FontSize="{StaticResource FontSize.Control}" Foreground="{DynamicResource Text.Muted}">
+          <Run Text="{Binding TodayLabel,Mode=OneWay}" /> <Run Text="{Binding WidgetTotal,Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource Text.Primary}" /> <Run Text="{Binding L[tokensUnit],Mode=OneWay}" />
+        </TextBlock>
+      </DockPanel>
+      <Border Background="{DynamicResource Bg.Panel}" BorderBrush="{DynamicResource Border.Card}" BorderThickness="0,1,0,0" CornerRadius="0,0,16,16" Padding="14">
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" local:Ui.Icon="{StaticResource Icon.Power}" Click="QuitClick" Margin="8,0,0,0"
+                  ToolTip="{Binding L[exit]}" AutomationProperties.Name="{Binding L[exit]}" />
+          <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" local:Ui.Icon="{StaticResource Icon.Nav.Settings}" Click="SettingsClick" Margin="8,0,0,0"
+                  ToolTip="{Binding L[settings]}" AutomationProperties.Name="{Binding L[settings]}" />
+          <Button Content="{Binding L[openDashboard]}" Click="DetailsClick" HorizontalAlignment="Stretch" Height="40" />
+        </DockPanel>
+      </Border>
+    </StackPanel>
+  </Border>
 </Window>

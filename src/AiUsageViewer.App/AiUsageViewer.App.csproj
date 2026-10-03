@@ -16,6 +16,7 @@
     <ProjectReference Include="../AiUsageViewer.Infrastructure/AiUsageViewer.Infrastructure.csproj" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <Resource Include="Assets\AppIcon.ico" />
+    <Resource Include="Assets\Fonts\*.ttf" />
     <Using Include="System" /><Using Include="System.IO" /><Using Include="System.Linq" />
     <Using Include="System.Collections.Generic" /><Using Include="System.Threading" /><Using Include="System.Threading.Tasks" />
   </ItemGroup>

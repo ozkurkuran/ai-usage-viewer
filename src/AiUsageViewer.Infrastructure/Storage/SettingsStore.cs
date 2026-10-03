@@ -20,7 +20,7 @@ public sealed class SettingsStore(string directory)
         var placement=value.WidgetPlacement??new();
         static double Finite(double value,double fallback)=>double.IsFinite(value)?value:fallback;
         var accounts=(value.Accounts??[]).Where(a=>a is not null&&!string.IsNullOrWhiteSpace(a.Id)&&Enum.IsDefined(a.Provider)).DistinctBy(a=>a.Id).ToList();
-        return value with { Language=AppLanguages.NormalizeSetting(value.Language),Theme=value.Theme=="light"?"light":"dark",Opacity=Math.Clamp(Finite(value.Opacity,.97),.35,1),
+        return value with { Language=AppLanguages.NormalizeSetting(value.Language),Theme=value.Theme is "light" or "system"?value.Theme:"dark",Opacity=Math.Clamp(Finite(value.Opacity,.97),.35,1),
             NotifyUsagePercent=Math.Clamp(value.NotifyUsagePercent,1,100),NotifyLowBalance=Math.Max(0,value.NotifyLowBalance),
             WidgetPlacement=placement with { Left=Finite(placement.Left,60),Top=Finite(placement.Top,60),Width=Math.Clamp(Finite(placement.Width,370),310,1000),
                 Height=Math.Clamp(Finite(placement.Height,580),310,1400),OffsetX=Finite(placement.OffsetX,60),OffsetY=Finite(placement.OffsetY,60) },

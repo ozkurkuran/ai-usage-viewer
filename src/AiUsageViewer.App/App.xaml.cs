@@ -47,11 +47,13 @@ public partial class App : System.Windows.Application
     private DispatcherTimer? displayTimer;
     private DispatcherTimer? debounce;
     private bool scanning;
+    private DateTimeOffset? lastScan;
     private WindowsWidgetBridge? windowsWidgetBridge;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        ThemeManager.Register();
         demo=e.Args.Contains("--demo");
         var widgetAction=Argument(e.Args,"--windows-widget-action");
         if(e.Args.Contains("--windows-widget-action")&&(widgetAction is not ("background" or "open" or "refresh")||!PackagedApp.IsPackaged))
@@ -120,16 +122,16 @@ public partial class App : System.Windows.Application
             collector=new(database);http=new();
             activityStore=new(Path.Combine(dataDirectory,"usage.db"));await activityStore.InitializeAsync(lifetime.Token);
             activitySync=new(new OpenRouterActivity(http,new WindowsSecretStore(Path.Combine(dataDirectory,"secrets"))),activityStore);
-            var providers=demo?new IQuotaProvider[] { new DemoProvider(ProviderKind.Claude),new DemoProvider(ProviderKind.Codex) }:
+            var providers=demo?new IQuotaProvider[] { new DemoProvider(ProviderKind.Claude),new DemoProvider(ProviderKind.Codex),new DemoProvider(ProviderKind.OpenRouter) }:
                 [new ClaudeProvider(http),new CodexProvider(),new OpenRouterProvider(http,new WindowsSecretStore(Path.Combine(dataDirectory,"secrets")))];
             quotas=new(providers,database);await quotas.LoadAsync(settings.Accounts,lifetime.Token);
             if(demo) await SeedDemoAsync();
-            viewModel=new(database,quotas,settings,RefreshAllAsync,demo);
+            viewModel=new(database,quotas,settings,RefreshAllAsync,demo,activityStore);
             dashboard=new(viewModel);widget=new(viewModel);panel=new(viewModel);MainWindow=dashboard;
             viewModel.SettingsRequested+=OpenSettings;viewModel.WidgetRequested+=()=> { widget.Show();widget.EnsureVisible(); };
+            panel.QuitRequested+=()=>Quit();
             viewModel.ExportRequested+=Export;
             viewModel.SampleRequested+=OpenSampleData;
-            viewModel.ActivityRequested+=()=>new ActivityWindow(settings,activityStore,()=>activitySync.RefreshAsync(settings.Accounts,true,lifetime.Token)) { Owner=dashboard }.Show();
             widget.DetailsRequested+=ShowDashboard;panel.DetailsRequested+=ShowDashboard;
             widget.ApplySettings(settings,true);
             if(PackagedApp.IsPackaged&&!demo&&!validationRun) {
@@ -156,7 +158,7 @@ public partial class App : System.Windows.Application
                     Directory.CreateDirectory(screenshot);
                     Capture(dashboard,Path.Combine(screenshot,"dashboard.png"),captureScale);Capture(widget,Path.Combine(screenshot,"widget.png"),captureScale);
                     Capture(panel,Path.Combine(screenshot,"tray.png"),captureScale);
-                    if(e.Args.Contains("--smoke-suite")) await RunSmokeSuiteAsync(screenshot);
+                    if(e.Args.Contains("--smoke-suite")) await RunSmokeSuiteAsync(screenshot,e.Args.Contains("--views"));
                 }
                 if(validateLive)
                 {
@@ -183,6 +185,7 @@ public partial class App : System.Windows.Application
             if(settings.ShowWidgetOnLaunch&&observation is null&&widgetAction is null) widget.Show();
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged+=DisplayChanged;
             Microsoft.Win32.SystemEvents.PowerModeChanged+=PowerChanged;
+            Microsoft.Win32.SystemEvents.UserPreferenceChanged+=ThemePreferenceChanged;
             SetUpWatchers();
             reconcileTimer=new(TimeSpan.FromSeconds(30),DispatcherPriority.Background,async(_,_)=>await CollectSafelyAsync(),Dispatcher);
             quotaTimer=new(TimeSpan.FromSeconds(30),DispatcherPriority.Background,async(_,_)=>await Task.WhenAll(RefreshQuotasSafelyAsync(false),RefreshActivitySafelyAsync(false)),Dispatcher);
@@ -224,7 +227,7 @@ public partial class App : System.Windows.Application
         if(scanning||demo) return;scanning=true;
         try
         {
-            var progress=await collector.CollectAsync(settings.Sources,lifetime.Token);
+            var progress=await collector.CollectAsync(settings.Sources,lifetime.Token);lastScan=DateTimeOffset.Now;
             observedScans++;observedChangedFiles+=progress.FilesChanged;observedSourceWarnings=progress.Warnings.Count;
             await viewModel.QueryAsync();
             if(progress.Warnings.Count>0) viewModel.Status=viewModel.L["sourceErrors"]+" · "+progress.Warnings.Count;
@@ -269,7 +272,7 @@ public partial class App : System.Windows.Application
         var menu=new Forms.ContextMenuStrip();
         menu.Items.Add(viewModel.L["details"],null,(_,_)=>ShowDashboard());
         menu.Items.Add(viewModel.L["widget"],null,(_,_)=> { widget.Show();widget.EnsureVisible(); });
-        menu.Items.Add(viewModel.L["settings"],null,(_,_)=>OpenSettings());
+        menu.Items.Add(viewModel.L["settings"],null,(_,_)=>OpenSettings(null));
         menu.Items.Add(new Forms.ToolStripSeparator());menu.Items.Add(viewModel.L["exit"],null,(_,_)=>Quit());
         tray.ContextMenuStrip=menu;
     }
@@ -286,14 +289,14 @@ public partial class App : System.Windows.Application
         if(applied!=enabled) MessageBox.Show(viewModel.L["startupManagedByWindows"],Localization.AppName);
         return applied;
     }
-    private async void OpenSettings()
+    private async void OpenSettings(string? section)
     {
         var secrets=new WindowsSecretStore(Path.Combine(settingsStore.DirectoryPath,"secrets"));
         // Users can change a packaged startup task in Windows Settings; show its actual state.
         if(!demo&&PackagedApp.IsPackaged)
             try { settings=settings with { StartWithWindows=await PackagedApp.IsStartupEnabledAsync() }; } catch(COMException) {}
         var before=settings with { WidgetPlacement=NativePlacement.Capture(widget) };
-        var window=new SettingsWindow(before,secrets,TestConnectionAsync) { Owner=dashboard.IsVisible?dashboard:null };
+        var window=new SettingsWindow(before,secrets,TestConnectionAsync,new(quotas,database,section,CollectSafelyAsync,()=>lastScan)) { Owner=dashboard.IsVisible?dashboard:null };
         if(window.ShowDialog()==true && window.Result is { } saved)
         {
             try
@@ -331,26 +334,45 @@ public partial class App : System.Windows.Application
         var alerts=notifications.Observe(status,settings);
         if(alerts.Count>0)
         {
-            var lines=alerts.Take(4).Select(a=>a.AccountLabel+" · "+viewModel.L[a.Kind switch { UsageAlertKind.Usage=>"alertUsage",UsageAlertKind.Reset=>"alertReset",_=>"alertBalance" }]+
-                (a.Value is { } value?$" ({value:0.#}{(a.Kind==UsageAlertKind.Usage?"%":" "+a.Currency)})":""));
-            tray.ShowBalloonTip(6000,Localization.AppName,string.Join(Environment.NewLine,lines),Forms.ToolTipIcon.Info);
+            // Same templates as the Settings preview; extra alerts are listed by title.
+            var texts=alerts.Take(4).Select(a=>NotificationText.Build(viewModel.L,viewModel.Format,a,DateTimeOffset.Now)).ToList();
+            var body=texts.Count==1?texts[0].Body:string.Join(Environment.NewLine,texts.Select(t=>t.Title));
+            tray.ShowBalloonTip(6000,texts.Count==1?texts[0].Title:Localization.AppName,body.Length>0?body:texts[0].Title,Forms.ToolTipIcon.Info);
         }
         try { notificationStore.Save(notifications); } catch(IOException) {} catch(UnauthorizedAccessException) {}
     }
     private async void Export()
     {
+        if(viewModel.IsOpenRouter) { await ExportActivityAsync();return; }
         var dialog=new Microsoft.Win32.SaveFileDialog { Filter="CSV (*.csv)|*.csv|JSON (*.json)|*.json",FileName="ai-usage-summary.csv" };
         if(dialog.ShowDialog(dashboard)!=true) return;
         try { var records=await database.ReadEventsAsync(viewModel.CurrentFilter());await UsageExport.WriteAsync(dialog.FileName,records); }
         catch(Exception ex) when(ex is IOException or UnauthorizedAccessException or Microsoft.Data.Sqlite.SqliteException)
         { MessageBox.Show(dashboard,viewModel.L["exportFailed"],Localization.AppName); }
     }
-    private void ApplyTheme()
+    // OpenRouter page: the stored activity rows of the selected account, invariant-culture CSV.
+    private async Task ExportActivityAsync()
     {
-        var colors=settings.Theme=="light"?new[]{"#F3F5FA","#FFFFFF","#E9EDF5","#D8DFEC","#1C2538","#566780","#6553CB"}:
-            new[]{"#10141D","#191F2B","#222B3A","#30394B","#F1F4FC","#A3AFC4","#A9A0FF"};
-        var keys=new[]{"BackgroundBrush","SurfaceBrush","RaisedBrush","StrokeBrush","TextBrush","MutedBrush","AccentBrush"};
-        for(var i=0;i<keys.Length;i++) Resources[keys[i]]=new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i]));
+        if(viewModel.OpenRouter.SelectedAccount is not { } account) return;
+        var dialog=new Microsoft.Win32.SaveFileDialog { Filter="CSV (*.csv)|*.csv",FileName="openrouter-activity.csv" };
+        if(dialog.ShowDialog(dashboard)!=true) return;
+        try
+        {
+            static string Field(string value)=>"\""+value.Replace("\"","\"\"")+"\"";
+            var rows=await activityStore.ReadAsync(account.Id);var culture=System.Globalization.CultureInfo.InvariantCulture;
+            var lines=new List<string> { "date_utc,model,input_tokens,output_tokens,requests,spend,byok_spend,currency" };
+            lines.AddRange(rows.OrderByDescending(r=>r.Day).Select(r=>string.Join(",",r.Day.ToString("yyyy-MM-dd",culture),Field(r.Model),r.Input.ToString(culture),r.Output.ToString(culture),
+                r.Requests.ToString(culture),r.Spend.ToString(culture),r.ByokSpend.ToString(culture),r.Currency)));
+            await File.WriteAllLinesAsync(dialog.FileName,lines);
+        }
+        catch(Exception ex) when(ex is IOException or UnauthorizedAccessException or Microsoft.Data.Sqlite.SqliteException)
+        { MessageBox.Show(dashboard,viewModel.L["exportFailed"],Localization.AppName); }
+    }
+    private void ApplyTheme()=>ThemeManager.Apply(settings.Theme);
+    private void ThemePreferenceChanged(object sender,Microsoft.Win32.UserPreferenceChangedEventArgs e)
+    {
+        if(e.Category==Microsoft.Win32.UserPreferenceCategory.General&&settings?.Theme=="system")
+            Dispatcher.BeginInvoke(()=> { var wasDark=ThemeManager.IsDark;ApplyTheme();if(wasDark!=ThemeManager.IsDark) viewModel?.ApplySettings(settings); });
     }
     private static void Capture(Window window,string path,double scale=1)
     {
@@ -358,7 +380,9 @@ public partial class App : System.Windows.Application
         var bitmap=new RenderTargetBitmap((int)(content.ActualWidth*scale),(int)(content.ActualHeight*scale),96*scale,96*scale,PixelFormats.Pbgra32);
         var visual=new DrawingVisual();using(var drawing=visual.RenderOpen()) {
             var bounds=new Rect(0,0,content.ActualWidth,content.ActualHeight);
-            drawing.DrawRectangle(window.Background,null,bounds);drawing.DrawRectangle(new VisualBrush(content) { Stretch=Stretch.Fill },null,bounds);
+            drawing.DrawRectangle(window.Background,null,bounds);
+            // Map exactly the laid-out area; content bounds can be stale right after a layout switch.
+            drawing.DrawRectangle(new VisualBrush(content) { Stretch=Stretch.Fill,ViewboxUnits=BrushMappingMode.Absolute,Viewbox=bounds },null,bounds);
         }
         bitmap.Render(visual);var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(bitmap));
         using var stream=File.Create(path);encoder.Save(stream);
@@ -378,15 +402,25 @@ public partial class App : System.Windows.Application
             }
         }
         await database.CommitBatchAsync(events,new("demo",0,0,0,0,"","",new()),default);
+        var now=DateTimeOffset.UtcNow;var yesterday=DateOnly.FromDateTime(now.UtcDateTime).AddDays(-1);
+        await activityStore.SaveAsync(new("demo-openrouter","demo-openrouter-key",ConnectionState.Ready,now,now.AddMinutes(15),now,yesterday.AddDays(-29),yesterday,null),
+            [new("demo-openrouter",yesterday,"openai/gpt-4.1","demo-endpoint",25000,15000,0,8,.75m,.12m)],false);
     }
-    private static AppSettings DemoSettings()=>new() { Accounts=[new() { Id="demo-claude",Provider=ProviderKind.Claude,Label="Claude Pro" },new() { Id="demo-codex",Provider=ProviderKind.Codex,Label="ChatGPT Plus" }] };
+    private static AppSettings DemoSettings()=>new() { Accounts=[new() { Id="demo-claude",Provider=ProviderKind.Claude,Label="Claude Pro" },new() { Id="demo-codex",Provider=ProviderKind.Codex,Label="ChatGPT Plus" },
+        new() { Id="demo-openrouter",Provider=ProviderKind.OpenRouter,Label="OpenRouter demo",SecretReference="demo-openrouter-key" }] };
     private sealed class DemoProvider(ProviderKind kind):IQuotaProvider
     {
         public ProviderKind Kind=>kind;
         public ProviderCapabilities Capabilities=>new(true,true,false,false,false);
-        public Task<ProviderResult> FetchAsync(AccountProfile account,CancellationToken cancellationToken)=>Task.FromResult(new ProviderResult(ConnectionState.Ready,
-            new(account.Id,kind,DateTimeOffset.UtcNow,[new("session","five_hour",kind==ProviderKind.Claude?38:21,DateTimeOffset.UtcNow.AddHours(2),WindowMinutes:300),
-                new("week","seven_day",kind==ProviderKind.Claude?54:67,DateTimeOffset.UtcNow.AddDays(3),WindowMinutes:10080)],[])));
+        public Task<ProviderResult> FetchAsync(AccountProfile account,CancellationToken cancellationToken)
+        {
+            var now=DateTimeOffset.UtcNow;
+            if(kind==ProviderKind.OpenRouter)
+                return Task.FromResult(new ProviderResult(ConnectionState.Ready,new(account.Id,kind,now,[],[new("balance","balance",9.25m),new("usage_monthly","usage_monthly",0.75m)])));
+            return Task.FromResult(new ProviderResult(ConnectionState.Ready,
+                new(account.Id,kind,now,[new("session","five_hour",kind==ProviderKind.Claude?38:21,now.AddHours(1).AddMinutes(59),WindowMinutes:300),
+                    new("week","seven_day",kind==ProviderKind.Claude?54:67,kind==ProviderKind.Claude?now.AddDays(2).AddHours(23):now.AddDays(3).AddHours(21),WindowMinutes:10080)],[])));
+        }
     }
     private void Quit(int code=0)
     {
@@ -400,7 +434,7 @@ public partial class App : System.Windows.Application
         lifetime.Cancel();reconcileTimer?.Stop();quotaTimer?.Stop();displayTimer?.Stop();debounce?.Stop();
         foreach(var watcher in watchers) watcher.Dispose();tray?.Dispose();http?.Dispose();
         collector?.Dispose();
-        Microsoft.Win32.SystemEvents.DisplaySettingsChanged-=DisplayChanged;Microsoft.Win32.SystemEvents.PowerModeChanged-=PowerChanged;
+        Microsoft.Win32.SystemEvents.DisplaySettingsChanged-=DisplayChanged;Microsoft.Win32.SystemEvents.PowerModeChanged-=PowerChanged;Microsoft.Win32.SystemEvents.UserPreferenceChanged-=ThemePreferenceChanged;
         if(dashboard is not null) dashboard.AllowClose=true;if(widget is not null) widget.AllowClose=true;if(panel is not null) panel.AllowClose=true;
         Shutdown(code);
     }
