@@ -102,6 +102,10 @@ background launch after a new logon, and uninstall with package-data removal
 `artifacts/msix-check-2/msix-result.json`, earlier run). This uses a local test identity;
 Partner Center identity and Store certification remain pending.
 
+Store-identity package verified on 3 October 2026 (Ai UsageNest, Mikrofab): the
+same complete scenario passed for `Mikrofab.AiUsageNest_6detc4ys2wkvc` 0.3.3.0
+(`artifacts/msix-check-store/msix-result.json`).
+
 If reconnecting immediately after sign-out leaves no active guest session, wait
 for sign-out to finish and run `wsb.exe connect` again with the same Sandbox ID.
 This host permits one active Sandbox at a time; finish it before starting another.

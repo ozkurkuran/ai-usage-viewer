@@ -108,6 +108,27 @@ until the remaining release gates have actual evidence.
   identity values are empty, so these are local-test packages, not Store uploads.
   WACK and Store certification remain pending. No commit/push was performed.
 
+### Ai UsageNest Store submission (3 October 2026)
+
+- Product renamed to Ai UsageNest (publisher Mikrofab, Store ID 9P3MB5NZ4K55).
+  Partner Center identity `Mikrofab.AiUsageNest` /
+  `CN=3ECE3801-0802-47D1-A7CD-137704DE8F59` is in `packaging/msix/identity.json`.
+- Release build 0 warnings / 0 errors; 68/68 tests passed.
+- Upload package: `artifacts/msix-store/AIUsageViewer-0.3.0-beta.3-win-x64.msix`
+  (0.3.3.0, Store identity, unsigned). Its manifest DisplayName, tile ShortName
+  and StartupTask name are "Ai UsageNest"; PublisherDisplayName is "Mikrofab".
+- English and Turkish synthetic UI suites passed; five 3840×2160 screenshots per
+  language (`artifacts/store-screenshots`, `artifacts/store-screenshots-tr`)
+  were inspected. The empty-data capture shows the Getting started card.
+- An interactive `--demo` instance (the "Try with sample data" process) opened
+  the "Ai UsageNest" window and exited with code 0 when the window was closed.
+- Clean Windows Sandbox (build 26100, no dotnet on PATH) with the Store-identity
+  package (test-signed copy) passed install, Start-menu activation, package data,
+  StartupTask enable, background start after a new logon and uninstall with
+  package-data removal. Package family `Mikrofab.AiUsageNest_6detc4ys2wkvc`
+  matches Partner Center (`artifacts/msix-check-store/msix-result.json`).
+- WACK needs an elevated session and was not run here.
+
 ### Stable release
 
 1. Extend the completed 30-minute resource observation to daily/overnight use.
