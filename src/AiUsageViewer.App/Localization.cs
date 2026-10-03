@@ -2,6 +2,8 @@ namespace AiUsageViewer.App;
 
 public sealed class Localization(string language)
 {
+    public const string AppName="Ai UsageNest";
+    public const string PrivacyUrl="https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md";
     public string Language { get; }=language;
     public string this[string key]=>Values.TryGetValue(key,out var value)?Language=="tr"?value.Tr:value.En:key;
     private static readonly Dictionary<string,(string Tr,string En)> Values=new() {
@@ -34,7 +36,8 @@ public sealed class Localization(string language)
         ["save"]=("Kaydet","Save"),["cancel"]=("İptal","Cancel"),["add"]=("Ekle","Add"),["remove"]=("Kaldır","Remove"),
         ["profile"]=("Profil klasörü","Profile directory"),["apiKey"]=("API anahtarı","API key"),["test"]=("Bağlantıyı dene","Test connection"),
         ["tokenCost"]=("Tahmini API karşılığı","Estimated API equivalent"),["priceUnknown"]=("Fiyat bilinmiyor","Price unknown"),
-        ["startup"]=("Windows ile başlat","Start with Windows"),["notifications"]=("Bildirimler","Notifications"),
+        ["startup"]=("Windows ile başlat","Start with Windows"),
+        ["startupManagedByWindows"]=("Windows başlangıç izni kapalı. Ayarlar > Uygulamalar > Başlangıç bölümünden Ai UsageNest'i açabilirsin.","Windows startup is turned off for this app. Turn on Ai UsageNest in Settings > Apps > Startup."),["notifications"]=("Bildirimler","Notifications"),
         ["balance"]=("Bakiye","Balance"),["usage_daily"]=("Bugünkü harcama","Today's spend"),["usage_weekly"]=("Haftalık harcama","Weekly spend"),
         ["usage_monthly"]=("Aylık harcama","Monthly spend"),["usage"]=("Tüm zamanlar harcaması","All-time spend"),["byok_usage"]=("BYOK harcaması","BYOK spend"),
         ["loading"]=("Yükleniyor…","Loading…"),["sourceErrors"]=("Bazı kaynaklara erişilemedi","Some sources could not be read"),
@@ -60,6 +63,11 @@ public sealed class Localization(string language)
         ["alertUsage"]=("Kota eşiğine ulaşıldı","Quota threshold reached"),["alertReset"]=("Kota yenilendi","Quota reset confirmed"),["alertBalance"]=("Bakiye azaldı","Balance is low"),
         ["daily"]=("Günlük","Daily"),["weekly"]=("Haftalık","Weekly"),["monthly"]=("Aylık","Monthly"),["lifetime"]=("Toplam limit","Lifetime limit"),
         ["dayUnit"]=("g","d"),["hourUnit"]=("sa","h"),["minuteUnit"]=("dk","m"),["permissionRequired"]=("Yetki gerekli","Permission required"),
-        ["accountNameRequired"]=("Hesaba bir ad ver.","Enter a name for this account.")
+        ["accountNameRequired"]=("Hesaba bir ad ver.","Enter a name for this account."),
+        ["gettingStarted"]=("Başlarken","Getting started"),
+        ["gettingStartedText"]=("Ai UsageNest, bu bilgisayardaki Claude Code ve Codex kullanım kayıtlarını okur; OpenRouter kullanımını API anahtarınla gösterir. Claude Code veya Codex'i bir kez kullan ya da Ayarlar'dan OpenRouter hesabı ekle; kayıtlar burada kendiliğinden görünür.",
+            "Ai UsageNest reads the usage records that Claude Code and Codex write on this PC, and shows OpenRouter usage with your API key. Use Claude Code or Codex once, or add an OpenRouter account in Settings; records appear here automatically."),
+        ["trySample"]=("Örnek veriyle dene","Try with sample data"),["privacyPolicy"]=("Gizlilik politikası","Privacy policy"),
+        ["startFailed"]=("Ai UsageNest başlatılamadı. Hata türü: ","Ai UsageNest could not start. Error type: ")
     };
 }

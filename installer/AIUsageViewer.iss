@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "0.3.0-beta.2"
+  #define AppVersion "0.3.0-beta.3"
 #endif
 #ifndef PublishDir
   #define PublishDir "..\artifacts\publish\win-x64"
@@ -10,11 +10,13 @@
 
 [Setup]
 AppId={{6A14A46B-B09F-423F-8FA1-5B342EE65625}
-AppName=AI Usage Viewer
+AppName=Ai UsageNest
 AppVersion={#AppVersion}
-AppPublisher=AI Usage Viewer contributors
-DefaultDirName={localappdata}\Programs\AI Usage Viewer
-DefaultGroupName=AI Usage Viewer
+AppPublisher=Mikrofab
+AppPublisherURL=https://github.com/ozkurkuran/ai-usage-viewer
+AppSupportURL=https://github.com/ozkurkuran/ai-usage-viewer/issues
+DefaultDirName={localappdata}\Programs\Ai UsageNest
+DefaultGroupName=Ai UsageNest
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
@@ -40,12 +42,17 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "{#PublishDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
+[InstallDelete]
+; Shortcuts from releases published as "AI Usage Viewer".
+Type: files; Name: "{autoprograms}\AI Usage Viewer.lnk"
+Type: files; Name: "{autodesktop}\AI Usage Viewer.lnk"
+
 [Icons]
-Name: "{autoprograms}\AI Usage Viewer"; Filename: "{app}\AIUsageViewer.exe"
-Name: "{autodesktop}\AI Usage Viewer"; Filename: "{app}\AIUsageViewer.exe"; Tasks: desktopicon
+Name: "{autoprograms}\Ai UsageNest"; Filename: "{app}\AIUsageViewer.exe"
+Name: "{autodesktop}\Ai UsageNest"; Filename: "{app}\AIUsageViewer.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\AIUsageViewer.exe"; Description: "{cm:LaunchProgram,AI Usage Viewer}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\AIUsageViewer.exe"; Description: "{cm:LaunchProgram,Ai UsageNest}"; Flags: nowait postinstall skipifsilent
 
 [Code]
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);

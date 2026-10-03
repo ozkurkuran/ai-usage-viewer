@@ -1,3 +1,24 @@
+# 0.3.0-beta.3 — Microsoft Store preparation
+
+- Renamed the product to **Ai UsageNest**, published by Mikrofab. The executable
+  (`AIUsageViewer.exe`), data folder and settings are unchanged, so existing
+  history carries over; the installer removes the old "AI Usage Viewer" shortcuts.
+- First run without usage records shows a "Getting started" card with Settings
+  and "Try with sample data", which opens a separate demo window that closes its
+  own process. The sidebar links to the privacy policy.
+- The first-run language follows the Windows display language (Turkish or English);
+  start-up error messages follow the same language.
+- Added application/window/tray icons and Microsoft Store visual assets.
+- Added MSIX packaging and CI artifacts. Store submission requires the three
+  identity values from Partner Center; empty values produce local test packages.
+- Packaged startup uses the Windows StartupTask API and opens in the background.
+- Added privacy policy, Turkish submission guide and English synthetic Store
+  screenshots rendered at 2× resolution with matching date/number formatting.
+- Added isolated MSIX installation/startup/uninstall validation scripts.
+
+Still a pre-release; Microsoft Store certification and the pending hardware/live
+provider checks are not claimed by these changes.
+
 # 0.3.0-beta.2
 
 - Claude quota now prefers the structured list used by the official client,

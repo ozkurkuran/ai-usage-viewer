@@ -37,6 +37,8 @@ jobs:
           if($p.ExitCode -ne 0) { throw 'Compiler extraction failed.' }
       - name: Package
         run: ./scripts/package.ps1 -Iscc (Join-Path $env:RUNNER_TEMP 'inno\ISCC.exe')
+      - name: Package MSIX for Microsoft Store
+        run: ./scripts/package-msix.ps1
       - name: Smoke self-contained executable
         run: ./scripts/smoke.ps1 -Executable artifacts/publish/win-x64/AIUsageViewer.exe -Output artifacts/smoke -Suite
       - name: Package source
@@ -47,6 +49,8 @@ jobs:
           name: windows-x64-preview
           path: |
             artifacts/release/*
+            artifacts/msix/*.msix
+            artifacts/msix/SHA256SUMS.txt
             artifacts/smoke/*.png
             artifacts/smoke/smoke-report.json
           if-no-files-found: error

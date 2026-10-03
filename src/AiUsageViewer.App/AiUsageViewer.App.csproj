@@ -1,18 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <!-- The versioned TFM provides the WinRT StartupTask/activation APIs used only when MSIX-packaged. -->
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>AIUsageViewer</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <!-- WPF owns startup and DPI awareness; WinForms is used only for NotifyIcon/Screen. -->
     <NoWarn>$(NoWarn);WFO0003</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../AiUsageViewer.Infrastructure/AiUsageViewer.Infrastructure.csproj" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <Resource Include="Assets\AppIcon.ico" />
     <Using Include="System" /><Using Include="System.IO" /><Using Include="System.Linq" />
     <Using Include="System.Collections.Generic" /><Using Include="System.Threading" /><Using Include="System.Threading.Tasks" />
   </ItemGroup>

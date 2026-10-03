@@ -35,7 +35,7 @@ public sealed class SettingsWindow : Window
         this.testConnection=testConnection;hidden=new(settings.HiddenAccounts);
         accounts=new(settings.Accounts.OrderBy(a=>settings.AccountOrder.IndexOf(a.Id) is var n&&n>=0?n:int.MaxValue));sources=new(settings.Sources);
         priceOverrides=new(settings.PriceOverrides);
-        Title=l["settings"]+" · AI Usage Viewer";Width=720;Height=690;MinWidth=560;MinHeight=500;WindowStartupLocation=WindowStartupLocation.CenterOwner;
+        Title=l["settings"]+" · "+Localization.AppName;Width=720;Height=690;MinWidth=560;MinHeight=500;WindowStartupLocation=WindowStartupLocation.CenterOwner;
         Style=(Style)FindResource(typeof(Window));
         var root=new DockPanel { Margin=new Thickness(24) };Content=root;
         var footer=new StackPanel { Orientation=Orientation.Horizontal,HorizontalAlignment=HorizontalAlignment.Right,Margin=new Thickness(0,20,0,0) };

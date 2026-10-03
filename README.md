@@ -1,7 +1,14 @@
-# AI Usage Viewer
+# Ai UsageNest
 
 A local, open-source Windows widget for AI token usage, subscription quotas and
-API spend. Independent C# / .NET 10 / WPF codebase, licensed under MIT.
+API spend. Independent C# / .NET 10 / WPF codebase, licensed under MIT and
+published by Mikrofab. Earlier pre-releases were named AI Usage Viewer; the
+executable and data folder keep the `AIUsageViewer` / `AiUsageViewer` names, so
+existing settings and history carry over.
+
+Ai UsageNest is not affiliated with or endorsed by Anthropic, OpenAI or
+OpenRouter. Support: [app@mikrofab.com](mailto:app@mikrofab.com) ·
+[privacy policy](PRIVACY.md).
 
 **Pre-release:** Windows x64, initially targeting Windows 11. This is not yet a
 fully validated stable v1.0. Observed tests and remaining release gates are in
@@ -52,7 +59,7 @@ entire ZIP; do not move only the executable. Verify the archive against
 `SHA256SUMS.txt`. Initial artifacts are unsigned.
 
 User data defaults to `%LOCALAPPDATA%\AiUsageViewer`, independently of the install
-directory. `--data-dir PATH` selects another location. DPAPI credentials remain
+directory. The Microsoft Store package keeps it in its own package storage instead. `--data-dir PATH` selects another location. DPAPI credentials remain
 bound to the current Windows user even in portable mode. Uninstall retains data.
 Back up the data directory with the app closed; never share it publicly.
 
@@ -93,7 +100,9 @@ dotnet run --project src/AiUsageViewer.App -c Release -- --demo
 ```
 
 Packages are written to `artifacts/release`. Omitting `-Iscc` builds the portable
-ZIP only. The workflow creates artifacts; it does not automatically publish a
+ZIP only. `./scripts/package-msix.ps1` then builds the Microsoft Store MSIX from
+the same publish output; identity, testing and listing steps are in the
+[Store guide](docs/MICROSOFT_STORE_TR.md) and the [privacy policy](PRIVACY.md). The workflow creates artifacts; it does not automatically publish a
 GitHub release. Contribution and privacy details: [CONTRIBUTING](CONTRIBUTING.md),
 [SECURITY](SECURITY.md), [third-party licenses](THIRD_PARTY_NOTICES.md).
 The optional source archive contains the current Git working tree, including

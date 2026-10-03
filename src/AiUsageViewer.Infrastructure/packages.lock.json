@@ -57,7 +57,7 @@
       "aiusageviewer.application": {
         "type": "Project",
         "dependencies": {
-          "AiUsageViewer.Core": "[0.1.0, )"
+          "AiUsageViewer.Core": "[0.3.0-beta.3, )"
         }
       },
       "aiusageviewer.core": {

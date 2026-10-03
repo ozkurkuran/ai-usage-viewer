@@ -5,7 +5,8 @@ public sealed record WindowPlacement(double Left = 60, double Top = 60, double W
 public sealed record AppSettings
 {
     public int Version { get; init; } = 1;
-    public string Language { get; init; } = "tr";
+    // First run follows the Windows display language; saved settings keep the user's choice.
+    public string Language { get; init; } = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName=="tr"?"tr":"en";
     public string Theme { get; init; } = "dark";
     public bool ShowRemaining { get; init; }
     public bool AlwaysOnTop { get; init; } = true;

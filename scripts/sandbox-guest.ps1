@@ -30,7 +30,7 @@ try {
     if(-not $first.runtimeDirectory.StartsWith($portable,[StringComparison]::OrdinalIgnoreCase)) { throw 'Application used a host runtime.' }
     $result.checks+='portable runs with its included runtime'
     $installer=Get-Item -LiteralPath "C:\ViewerPackages\AIUsageViewer-$Version-win-x64-Setup.exe"
-    $installed=Join-Path $env:LOCALAPPDATA 'Programs\AI Usage Viewer'
+    $installed=Join-Path $env:LOCALAPPDATA 'Programs\Ai UsageNest'
     $installArguments=@('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/CURRENTUSER','/NOICONS',('/DIR="'+$installed+'"'))
     $previous='C:\ViewerPackages\AIUsageViewer-0.3.0-beta.1-win-x64-Setup.exe'
     if($Version -ne '0.3.0-beta.1' -and (Test-Path -LiteralPath $previous)) {

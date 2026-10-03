@@ -1,9 +1,13 @@
-param([string]$Dotnet='dotnet',[string]$Iscc='',[string]$Version='0.3.0-beta.2',[switch]$SkipRestore)
+param([string]$Dotnet='dotnet',[string]$Iscc='',[string]$Version='',[string]$OutputRoot='',[switch]$SkipRestore)
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $artifactRoot=Join-Path $repo 'artifacts'
-$publish=Join-Path $artifactRoot 'publish\win-x64'
-$release=Join-Path $artifactRoot 'release'
+if(-not $Version) { $Version=([xml](Get-Content -LiteralPath (Join-Path $repo 'Directory.Build.props') -Raw)).Project.PropertyGroup.Version }
+# An alternative root keeps other builds (for example downloaded release files) untouched.
+$outputBase=if($OutputRoot) { [IO.Path]::GetFullPath($OutputRoot) } else { $artifactRoot }
+if(-not ($outputBase+[IO.Path]::DirectorySeparatorChar).StartsWith($artifactRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) { throw 'Output root must be under artifacts.' }
+$publish=Join-Path $outputBase 'publish\win-x64'
+$release=Join-Path $outputBase 'release'
 $project=Join-Path $repo 'src\AiUsageViewer.App\AiUsageViewer.App.csproj'
 if($Version -notmatch '^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$') { throw 'Invalid version.' }
 # Refuse to package stale files. Deletion is limited to the resolved build output.

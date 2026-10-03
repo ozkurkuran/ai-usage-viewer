@@ -79,3 +79,29 @@ authentication ID, the app started through HKCU Run with paths containing spaces
 database initialization and no visible main window. It writes `startup-result.json`
 and shuts down. `wsb.exe list --raw` can confirm the guest has stopped. Do not
 substitute a host sign-out or modify host startup settings for this procedure.
+
+The MSIX scenario uses the test-signed package from `package-msix.ps1 -TestSign`
+(`artifacts/msix`). The guest trusts the throwaway certificate, installs the
+package, checks Start-menu activation and containerized data, enables the
+StartupTask with `--validate-package` and writes `msix-stage.json`
+(`stage: ready-for-logoff`). Use the same sign-out/connect commands with
+`artifacts/msix-check/sandbox-id.txt`. After the new logon it verifies a background
+StartupTask launch, uninstalls the package and writes `msix-result.json`.
+
+```powershell
+./scripts/sandbox-test.ps1 -Output artifacts/msix-check -Scenario msix
+```
+
+Local Store preparation verified on 1 October 2026: all 68 automated tests and
+the English synthetic UI suite passed. Five 3840×2160 Store screenshots were
+visually checked; window captures render at 2×, with English date/number formats.
+The isolated MSIX check on Windows build 26100, without dotnet on PATH, passed
+installation, Start-menu activation, package-container data, enabling StartupTask,
+background launch after a new logon, and uninstall with package-data removal
+(`artifacts/msix-check-final-2/msix-result.json`, final package;
+`artifacts/msix-check-2/msix-result.json`, earlier run). This uses a local test identity;
+Partner Center identity and Store certification remain pending.
+
+If reconnecting immediately after sign-out leaves no active guest session, wait
+for sign-out to finish and run `wsb.exe connect` again with the same Sandbox ID.
+This host permits one active Sandbox at a time; finish it before starting another.

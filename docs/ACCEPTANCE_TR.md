@@ -64,3 +64,14 @@ kapsamlı Windows DPAPI ile korunur. Dağıtılan ilk paketler imzasızdır.
 
 Ayrıntılı kanıt ve test senaryoları: [Implementation status](IMPLEMENTATION_STATUS.md),
 [Windows QA](WINDOWS_QA.md), [sağlayıcı sözleşmeleri](providers/README.md).
+
+## Microsoft Store hazırlığı — 1 Ekim 2026
+
+- beta.3 için 68/68 otomatik test ve İngilizce sentetik arayüz kontrolü geçti.
+- Beş İngilizce 3840×2160 ekran görüntüsü 2× pencere renderlarından üretildi;
+  örnek veri etiketi, tarih/sayı biçimleri ve tablo yerleşimi gözle kontrol edildi.
+- Yerel test kimlikli MSIX 0.3.3.0, Windows 26100 Sandbox'ta SDK/runtime kurulumu
+  olmadan kuruldu. Başlat menüsü, paket içi veri, StartupTask ve gerçek yeni
+  oturumda arka plan başlangıcı geçti. Kaldırmada paket ve paket verileri silindi.
+- Partner Center kimlikleri ve Store sertifikasyonu bekliyor; WACK çalıştırılmadı.
+  Bu sonuçlar yukarıdaki kararlı sürüm için açık kalan kontrolleri kapatmaz.

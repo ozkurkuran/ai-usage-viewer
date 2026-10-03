@@ -56,7 +56,7 @@ public sealed class CodexProvider : IQuotaProvider
 
     public static async Task<ProviderResult> ExchangeAsync(TextReader output,TextWriter input,AccountProfile account,CancellationToken ct)
     {
-        await SendAsync(new { id=1,method="initialize",@params=new { clientInfo=new { name="ai_usage_viewer",title="AI Usage Viewer",version="0.3.0" } } });
+        await SendAsync(new { id=1,method="initialize",@params=new { clientInfo=new { name="ai_usage_viewer",title="Ai UsageNest",version="0.3.0" } } });
         var initialize=await ReadAsync(1);
         if(initialize.Get("error").ValueKind==JsonValueKind.Object) return new(ConnectionState.Unavailable,MessageCode:"codex_initialize_failed");
         await SendAsync(new { method="initialized",@params=new {} });

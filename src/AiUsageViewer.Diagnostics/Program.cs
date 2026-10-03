@@ -6,7 +6,7 @@ using AiUsageViewer.Infrastructure.Storage;
 
 if(!args.Contains("--scan") && !args.Contains("--quota"))
 {
-    Console.WriteLine("AI Usage Viewer diagnostics: --scan and/or --quota [--data-dir PATH]. Outputs counts and quota windows only.");
+    Console.WriteLine("Ai UsageNest diagnostics: --scan and/or --quota [--data-dir PATH]. Outputs counts and quota windows only.");
     return;
 }
 var directoryIndex=Array.IndexOf(args,"--data-dir");

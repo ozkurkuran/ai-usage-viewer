@@ -17,10 +17,11 @@ public partial class App
         Progress("begin");
         void Check(bool condition,string name) { if(!condition) throw new InvalidOperationException("Smoke check failed: "+name);checks.Add(name); }
         var emptyDatabase=new UsageDatabase(Path.Combine(settingsStore.DirectoryPath,"empty-smoke.db"));await emptyDatabase.InitializeAsync();
-        var emptyModel=new DashboardViewModel(emptyDatabase,quotas,new AppSettings(),()=>Task.CompletedTask,true);await emptyModel.QueryAsync();emptyModel.UpdateAccounts();
-        Check(emptyModel.Total=="0"&&emptyModel.WidgetTotal=="0"&&emptyModel.EstimatedCost=="—"&&emptyModel.WidgetStatus==emptyModel.L["noData"]&&emptyModel.Accounts.Count==0,"empty data is explained without invented cost or accounts");
+        var emptyModel=new DashboardViewModel(emptyDatabase,quotas,new AppSettings { Language=settings.Language },()=>Task.CompletedTask,true);await emptyModel.QueryAsync();emptyModel.UpdateAccounts();
+        Check(emptyModel.Total=="0"&&emptyModel.WidgetTotal=="0"&&emptyModel.EstimatedCost=="—"&&emptyModel.WidgetStatus==emptyModel.L["noData"]&&emptyModel.Accounts.Count==0&&emptyModel.ShowGettingStarted,"empty data is explained without invented cost or accounts");
+        Check(!viewModel.ShowGettingStarted,"getting-started guidance hidden once usage records exist");
         var emptyWindow=new DashboardWindow(emptyModel) { Left=-10000,Top=-10000,WindowStartupLocation=WindowStartupLocation.Manual,AllowClose=true };
-        emptyWindow.Show();await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);Capture(emptyWindow,Path.Combine(directory,"empty-data.png"));emptyWindow.Close();
+        emptyWindow.Show();await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);Capture(emptyWindow,Path.Combine(directory,"empty-data.png"),captureScale);emptyWindow.Close();
         Check(viewModel.Accounts.Count==2&&viewModel.WidgetAccounts.Count==2,"default account surfaces");
         var todayTotal=viewModel.WidgetTotal;var todayCost=viewModel.WidgetCost;
         viewModel.NavigateCommand.Execute("projects");await viewModel.QueryAsync();
@@ -29,7 +30,8 @@ public partial class App
         viewModel.OpenGroupCommand.Execute(viewModel.Groups.First());await viewModel.QueryAsync();
         Check(viewModel.Page=="models"&&viewModel.CurrentFilter().SessionId is not null,"session to models");
         Check(viewModel.WidgetTotal==todayTotal&&viewModel.WidgetCost==todayCost,"widget today totals independent of project/session filter");
-        Capture(dashboard,Path.Combine(directory,"session-detail.png"));
+        await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);
+        Capture(dashboard,Path.Combine(directory,"session-detail.png"),captureScale);
         viewModel.NavigateCommand.Execute("overview");await viewModel.QueryAsync();
         viewModel.Range=viewModel.Ranges.Single(r=>r.Key=="all");viewModel.Tool=viewModel.Tools.Single(t=>t.Key=="Codex");
         viewModel.Model=viewModel.Models.First(m=>m.Key.Length>0);await viewModel.QueryAsync();
@@ -43,7 +45,7 @@ public partial class App
         Check(viewModel.Accounts.Count==2&&viewModel.WidgetAccounts.Count==1&&viewModel.Accounts[0].Provider=="Codex","widget-only visibility and ordering");
         Check(viewModel.WidgetAccounts[0].Windows[0].Percent.StartsWith("79%"),"remaining mode");
         await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);
-        Capture(widget,Path.Combine(directory,"widget-light-compact-en.png"));
+        Capture(widget,Path.Combine(directory,"widget-light-compact-en.png"),captureScale);
         settings=original;ApplyTheme();widget.ApplySettings(settings);viewModel.ApplySettings(settings);await viewModel.QueryAsync();
         var preferences=new SettingsWindow(settings,new WindowsSecretStore(Path.Combine(settingsStore.DirectoryPath,"secrets"))) { Left=-10000,Top=-10000,WindowStartupLocation=WindowStartupLocation.Manual };
         preferences.Show();
@@ -51,7 +53,10 @@ public partial class App
         for(var i=0;i<preferences.PageCount;i++)
         {
             preferences.SelectPage(i);await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);
-            Capture(preferences,Path.Combine(directory,$"settings-{i}.png"));
+            if(i==1) Find<ListBox>(preferences,"AccountList").SelectedIndex=0;
+            if(i==3) Find<ComboBox>(preferences,"PriceCatalog").SelectedIndex=0;
+            await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);
+            Capture(preferences,Path.Combine(directory,$"settings-{i}.png"),captureScale);
         }
         preferences.Close();checks.Add("all settings pages render");
         var edit=new SettingsWindow(settings,new WindowsSecretStore(Path.Combine(settingsStore.DirectoryPath,"secrets"))) { Left=-10000,Top=-10000,WindowStartupLocation=WindowStartupLocation.Manual };
@@ -71,7 +76,7 @@ public partial class App
         var activity=new ActivityWindow(settings with { Accounts=[account] },activityStore,()=>Task.CompletedTask) { Left=-10000,Top=-10000,WindowStartupLocation=WindowStartupLocation.Manual };
         activity.Show();await activity.LoadAsync();await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);
         Progress("history-view");
-        Capture(activity,Path.Combine(directory,"openrouter-history.png"));activity.Close();checks.Add("synthetic activity view");
+        Capture(activity,Path.Combine(directory,"openrouter-history.png"),captureScale);activity.Close();checks.Add("synthetic activity view");
         foreach(var scale in new[]{1d,1.5d,2d}) Capture(widget,Path.Combine(directory,$"widget-render-{scale*100:0}.png"),scale);
         checks.Add("100/150/200 percent render targets (not physical DPI switching)");
         var monitors=System.Windows.Forms.Screen.AllScreens.Select(s=>new { s.DeviceName,s.Primary,s.WorkingArea.Width,s.WorkingArea.Height }).ToList();

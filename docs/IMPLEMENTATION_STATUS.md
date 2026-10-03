@@ -87,6 +87,29 @@ until the remaining release gates have actual evidence.
 
 ## Remaining release work
 
+### Microsoft Store preparation (1 October 2026)
+
+- Version 0.3.0-beta.3 / MSIX 0.3.3.0; application/window/tray icons, Store assets,
+  MSIX packaging/CI, privacy policy and Turkish submission guide are prepared.
+- All 68 automated tests passed; Release self-contained publish succeeded.
+- Demo-only `--language en|tr` applies language and date/number culture.
+  `--capture-scale` accepts finite 1–3 values only for demo screenshots; invalid
+  NaN was rejected before capture. The explicit physical-DPI render loop retains
+  its own 1/1.5/2 scales. Session capture waits for deferred table layout.
+- English synthetic UI suite passed with 632 records / 9,762,481 tokens.
+  Five 3840×2160 composed Store PNGs were visually inspected under
+  `artifacts/store-screenshots`; all use synthetic data and a demo label.
+- MSIX clean Sandbox build 26100 passed installation, Start-menu launch,
+  containerized data, StartupTask enablement, background startup after a new
+  Windows logon, uninstall and removal of package data
+  (`artifacts/msix-check-2/msix-result.json`). The final package passed the same
+  complete scenario (`artifacts/msix-check-final-2/msix-result.json`).
+- Final package output is `artifacts/msix-final`. Partner Center
+  identity values are empty, so these are local-test packages, not Store uploads.
+  WACK and Store certification remain pending. No commit/push was performed.
+
+### Stable release
+
 1. Extend the completed 30-minute resource observation to daily/overnight use.
    Do not infer overnight stability from this bounded baseline.
 2. Resolve physical mixed-DPI, monitor removal, actual suspend/resume and live

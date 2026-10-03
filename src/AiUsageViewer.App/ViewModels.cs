@@ -64,8 +64,10 @@ public sealed partial class DashboardViewModel : ObservableObject
     [ObservableProperty] private string focusLabel="";
     public bool HasFocus=>!string.IsNullOrEmpty(FocusLabel);
     [ObservableProperty] private bool isBusy;
+    [ObservableProperty] private bool showGettingStarted;
     [ObservableProperty] private IReadOnlyList<DailyUsage> daily=[];
     public bool Demo { get; }
+    public bool CanTrySample=>!Demo;
     public bool IsOverview=>Page=="overview";
     public bool IsSubscriptions=>Page=="subscriptions";
     public bool IsTable=>!IsOverview&&!IsSubscriptions;
@@ -75,6 +77,7 @@ public sealed partial class DashboardViewModel : ObservableObject
     public event Action? WidgetRequested;
     public event Action? ExportRequested;
     public event Action? ActivityRequested;
+    public event Action? SampleRequested;
 
     public DashboardViewModel(UsageDatabase database,QuotaCoordinator quotas,AppSettings settings,Func<Task> refresh,bool demo=false)
     {
@@ -115,6 +118,8 @@ public sealed partial class DashboardViewModel : ObservableObject
     [RelayCommand] private void ShowWidget()=>WidgetRequested?.Invoke();
     [RelayCommand] private void Export()=>ExportRequested?.Invoke();
     [RelayCommand] private void OpenActivity()=>ActivityRequested?.Invoke();
+    [RelayCommand] private void TrySample()=>SampleRequested?.Invoke();
+    [RelayCommand] private static void OpenPrivacy()=>System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Localization.PrivacyUrl) { UseShellExecute=true })?.Dispose();
     [RelayCommand] private async Task RefreshAsync()
     {
         if(IsBusy) return;IsBusy=true;Status=L["refreshing"];
@@ -147,6 +152,8 @@ public sealed partial class DashboardViewModel : ObservableObject
         Cache=Number(summary.Tokens.CacheRead+summary.Tokens.CacheWrite5m+summary.Tokens.CacheWrite1h);Requests=Number(summary.Requests);
         Coverage=summary.UncertainRequests>0?$"{summary.UncertainRequests} {L["verified"]}":L["scope"];
         Status=summary.Requests==0?L["noData"]:L["local"]+" · "+DateTime.Now.ToString("HH:mm");
+        // No stored records at all (any range) and nothing else to show: explain what the app needs.
+        ShowGettingStarted=result.Models.Count==0&&!settings.Accounts.Any(a=>a.Provider==ProviderKind.OpenRouter);
         Daily=result.Days;Groups.Clear();
         var tariff=DateTimeOffset.UtcNow;
         var estimate=prices.Estimate(result.Events,settings.PriceOverrides,tariff);EstimatedCost=CostText(estimate);
