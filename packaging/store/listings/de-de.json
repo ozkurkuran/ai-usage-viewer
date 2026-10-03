@@ -1,0 +1,16 @@
+{
+  "language": "de-de",
+  "productName": "Ai UsageNest",
+  "shortDescription": "Claude Code, Codex und OpenRouter an einem Ort: Nutzungsdaten, Desktop-Widget und lokaler Verlauf.",
+  "description": "Ai UsageNest ist ein kostenloser Open-Source-Desktopmonitor von Mikrofab für die Nutzung von Claude Code, Codex und OpenRouter. Sieh verarbeitete Tokens, Abonnementkontingente, Zurücksetzungszeiten, Projekt- und Sitzungsverläufe sowie geschätzte API-Kosten.\n\nFür echte Nutzungsdaten musst du Claude Code oder Codex installieren und verwenden oder einen OpenRouter-API-Schlüssel hinzufügen. Kontingente erfordern ein angemeldetes Konto. Du kannst die App zunächst mit Beispieldaten erkunden. Der Verlauf bleibt auf diesem PC; gespeicherte API-Schlüssel werden von Windows verschlüsselt. Die Daten stammen aus lokalen Protokollen und Verbindungen zu den Anbietern.\n\nDie Oberfläche unterstützt 12 Sprachen und folgt standardmäßig der Windows-Anzeigesprache. Sprache, helles/dunkles Design und Widget-Optionen lassen sich in den Einstellungen ändern. Kontingente hängen vom Anbieter ab; die Claude-Kontingentquelle ist experimentell. Geschätzte API-Kosten sind keine Abonnementrechnung. Ai UsageNest ist nicht mit Anthropic, OpenAI oder OpenRouter verbunden.",
+  "productFeatures": [
+    "Verarbeitete Tokens",
+    "Abonnementnutzung",
+    "Projekte · Sitzungen",
+    "Widget",
+    "Dunkel · Hell",
+    "Systemsprache"
+  ],
+  "privacyPolicyUrl": "https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md",
+  "supportContact": "app@mikrofab.com"
+}

@@ -7,6 +7,8 @@ param(
     [string]$PublisherDisplayName='',
     [string]$PackageVersion='',
     [string]$WindowsSdkBin='',
+    [string]$Dotnet='dotnet',
+    [string]$WidgetPublishDir='',
     [switch]$TestSign
 )
 # Builds an MSIX package from the self-contained publish output of package.ps1.
@@ -50,6 +52,16 @@ try { $null=[Security.Cryptography.X509Certificates.X500DistinguishedName]::new(
 $exe=Join-Path $PublishDir 'AIUsageViewer.exe'
 if(-not(Test-Path -LiteralPath $exe) -or -not(Test-Path -LiteralPath (Join-Path $PublishDir 'coreclr.dll'))) { throw 'Self-contained publish output not found; run package.ps1 first.' }
 if(((Get-Item -LiteralPath $exe).VersionInfo.ProductVersion -split '\+')[0] -ne $Version) { throw 'Publish output version does not match; run package.ps1 for this version.' }
+if(-not $WidgetPublishDir) {
+    $WidgetPublishDir=Join-Path $artifactRoot 'windows-widgets\publish'
+    & (Join-Path $PSScriptRoot 'package-widgets.ps1') -Dotnet $Dotnet -Version $Version -Output $WidgetPublishDir
+}
+$widgetExe=Join-Path $WidgetPublishDir 'AIUsageViewer.Widgets.exe'
+if(-not(Test-Path -LiteralPath $widgetExe) -or ((Get-Item -LiteralPath $widgetExe).VersionInfo.ProductVersion -split '\+')[0] -ne $Version) { throw 'Widget provider version does not match.' }
+foreach($required in @('coreclr.dll','Microsoft.Windows.Widgets.dll','WindowsAppSDK-LICENSE.txt')) {
+    if(-not(Test-Path -LiteralPath (Join-Path $WidgetPublishDir $required))) { throw "Widget provider dependency missing: $required" }
+}
+if(-not(Test-Path -LiteralPath (Join-Path $repo 'packaging\msix\WidgetAssets\Overview.png'))) { throw 'Widget picker preview is missing.' }
 
 if(-not $WindowsSdkBin) {
     $kits=Join-Path ${env:ProgramFiles(x86)} 'Windows Kits\10\bin'
@@ -71,6 +83,11 @@ $layout=Join-Path $Output 'layout';$pri=Join-Path $Output 'pri'
 New-Item -ItemType Directory -Path $layout,(Join-Path $pri 'Assets') -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $layout 'Assets') -Force | Out-Null
 Copy-Item -Path (Join-Path $PublishDir '*') -Destination $layout -Recurse
+Copy-Item -LiteralPath $WidgetPublishDir -Destination (Join-Path $layout 'Widgets') -Recurse
+Copy-Item -LiteralPath (Join-Path $repo 'packaging\msix\WidgetAssets') -Destination (Join-Path $layout 'WidgetAssets') -Recurse
+New-Item -ItemType Directory -Path (Join-Path $layout 'Public') -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $repo 'README.md'),(Join-Path $repo 'THIRD_PARTY_NOTICES.md'),(Join-Path $repo 'PRIVACY.md') -Destination $layout -Force
+Copy-Item -Path (Join-Path $repo 'docs\*') -Destination (Join-Path $layout 'docs') -Recurse -Force
 Remove-Item -LiteralPath (Join-Path $layout 'files.sha256.json') -ErrorAction SilentlyContinue
 $forbidden=Get-ChildItem -LiteralPath $layout -Recurse -File | Where-Object { $_.Extension -in '.db','.secrets','.jsonl','.pfx' -or $_.Name -eq 'settings.json' }
 if($forbidden) { throw 'Private data unexpectedly present in package layout.' }

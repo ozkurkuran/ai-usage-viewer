@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using AiUsageViewer.Core;
 using AiUsageViewer.Application;
+using AiUsageViewer.Application.WindowsWidgets;
 using AiUsageViewer.Infrastructure.Storage;
 using AiUsageViewer.Infrastructure.Analytics;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -78,6 +79,13 @@ public sealed partial class DashboardViewModel : ObservableObject
     public event Action? ExportRequested;
     public event Action? ActivityRequested;
     public event Action? SampleRequested;
+    public event Action? WidgetDataChanged;
+    private DateOnly widgetDay;
+    private DateTimeOffset widgetUpdatedAt;
+    public WidgetSnapshot CreateWindowsWidgetSnapshot()=>new(WidgetSnapshot.CurrentVersion,L.Language,
+        widgetDay,widgetUpdatedAt,DateTimeOffset.UtcNow,WidgetTotal,ShowCost?WidgetCost:null,
+        WidgetAccounts.Select(a=>new WidgetAccount(a.Name,a.Status,
+            a.WidgetWindows.Select(w=>w.Label+": "+w.Percent).Concat(a.WidgetMoney.Select(m=>m.Label+": "+m.Value)).ToArray())).ToArray(),Demo);
 
     public DashboardViewModel(UsageDatabase database,QuotaCoordinator quotas,AppSettings settings,Func<Task> refresh,bool demo=false)
     {
@@ -91,7 +99,7 @@ public sealed partial class DashboardViewModel : ObservableObject
     public void ApplySettings(AppSettings value)
     {
         var rangeKey=Range.Key;var toolKey=Tool.Key;var modelKey=Model.Key;
-        settings=value;L=new(value.Language);OnPropertyChanged(nameof(L));
+        settings=value;AppLanguages.ApplyCulture(value.Language);L=new(value.Language);OnPropertyChanged(nameof(L));
         OnPropertyChanged(nameof(ShowCost));OnPropertyChanged(nameof(Compact));
         Ranges=CreateRanges();Tools=CreateTools();OnPropertyChanged(nameof(Ranges));OnPropertyChanged(nameof(Tools));
         Range=Ranges.FirstOrDefault(x=>x.Key==rangeKey)??Ranges[0];Tool=Tools.FirstOrDefault(x=>x.Key==toolKey)??Tools[0];
@@ -175,8 +183,9 @@ public sealed partial class DashboardViewModel : ObservableObject
             Heatmap.Add(new(color,day.ToString("dd MMM yyyy")+" · "+Number(value)+" token"));
         }
         OnPropertyChanged(nameof(TodayLabel));
+        widgetDay=today;widgetUpdatedAt=DateTimeOffset.UtcNow;WidgetDataChanged?.Invoke();
     }
-    private string Number(long value)=>value.ToString("N0",CultureInfo.GetCultureInfo(settings.Language=="tr"?"tr-TR":"en-US"));
+    private string Number(long value)=>value.ToString("N0",AppLanguages.CultureFor(settings.Language));
     private string DescribePrices(CostSummary estimate,IEnumerable<UsageEvent> events,DateTimeOffset tariff)
     {
         var models=events.Where(e=>e.Identity!=IdentityQuality.UncertainFork).Select(e=>e.Model).ToHashSet();
@@ -224,6 +233,7 @@ public sealed partial class DashboardViewModel : ObservableObject
             var card=new AccountCard(account.Label,account.Provider.ToString(),providerColor,statusText,updated,rows,money,resetText,settings.Compact,detail);
             Accounts.Add(card);if(!settings.HiddenAccounts.Contains(account.Id)) WidgetAccounts.Add(card);
         }
+        WidgetDataChanged?.Invoke();
     }
     private string FormatDuration(TimeSpan value)=>value.TotalDays>=1?$"{(int)value.TotalDays} {L["dayUnit"]} {value.Hours} {L["hourUnit"]}":value.TotalHours>=1?$"{(int)value.TotalHours} {L["hourUnit"]} {value.Minutes} {L["minuteUnit"]}":$"{Math.Max(0,(int)value.TotalMinutes)} {L["minuteUnit"]}";
 }

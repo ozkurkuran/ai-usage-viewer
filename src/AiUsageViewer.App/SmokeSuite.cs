@@ -46,9 +46,18 @@ public partial class App
         Check(viewModel.WidgetAccounts[0].Windows[0].Percent.StartsWith("79%"),"remaining mode");
         await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);
         Capture(widget,Path.Combine(directory,"widget-light-compact-en.png"),captureScale);
+        settings=original with { Theme="light",Compact=true,ShowRemaining=true,HiddenAccounts=["demo-claude"],AccountOrder=["demo-codex","demo-claude"] };
+        ApplyTheme();widget.ApplySettings(settings);viewModel.ApplySettings(settings);await viewModel.QueryAsync();
+        await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);
+        Capture(widget,Path.Combine(directory,"widget-light-compact.png"),captureScale);
         settings=original;ApplyTheme();widget.ApplySettings(settings);viewModel.ApplySettings(settings);await viewModel.QueryAsync();
         var preferences=new SettingsWindow(settings,new WindowsSecretStore(Path.Combine(settingsStore.DirectoryPath,"secrets"))) { Left=-10000,Top=-10000,WindowStartupLocation=WindowStartupLocation.Manual };
         preferences.Show();
+        var languageChoices=Find<ComboBox>(preferences,"LanguageChoice");
+        Check(languageChoices.Items.Count==AppLanguages.Supported.Count+1&&
+            (string)languageChoices.SelectedValue==settings.Language,"all languages selectable and saved choice selected");
+        Check(viewModel.L.Language==AppLanguages.Resolve(settings.Language)&&
+            System.Globalization.CultureInfo.CurrentCulture.Name==AppLanguages.CultureFor(settings.Language).Name,"UI language and formatting culture agree");
         Progress("settings-pages");
         for(var i=0;i<preferences.PageCount;i++)
         {

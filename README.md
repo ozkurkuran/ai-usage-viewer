@@ -33,6 +33,10 @@ widget'ın toplamını değiştirmez.
 
 ## Features
 
+- Windows 11 Widgets board integration in the MSIX build, with small/medium/large
+  cards, local token totals, quota summaries and open/refresh actions. See the
+  [Windows widget guide](docs/WINDOWS_WIDGET_TR.md) for setup and validation limits.
+
 - Desktop widget, notification-area panel and analytics window.
 - Incremental Claude Code and Codex JSONL collection, SQLite history and deduplication.
 - Input/output/cache breakdown; today, last seven days, month and all-history filters.
@@ -44,7 +48,11 @@ widget'ın toplamını değiştirmez.
 - Exact-model, source-dated pricing and per-model overrides. Unknown prices stay
   unknown. CSV/JSON exports contain usage metadata, not conversations or secrets.
 - Multiple profiles, widget card ordering/visibility, compact display, remaining/
-  used mode, optional cost, dark/light themes, opacity and Turkish/English.
+  used mode, optional cost, dark/light themes, opacity and 12 language options:
+  English, Turkish, Spanish, German, French, Portuguese (Portugal and Brazil),
+  Russian, Dutch, Czech, Italian and Polish. The default **System language**
+  follows the Windows display language at launch; unsupported languages use English.
+  A manual language choice in Settings is saved across restarts.
 - Optional quota/reset/low-balance notifications and Windows startup.
 - Current-user DPAPI for API keys; no app account, telemetry or hosted backend.
 

@@ -142,6 +142,49 @@ See WINDOWS_QA.md for the detailed manual scenarios. Reference repositories are
 unchanged and not dependencies. Local account data, settings, databases, keys and
 private validation output must remain outside source/release packages.
 
+### Language expansion (3 October 2026)
+
+- Added complete embedded catalogs (140 strings each) for 12 language options:
+  en, tr, es, de, fr, pt, pt-BR, ru, nl, cs, it and pl. Desktop and Windows board
+  cards use the same catalogs. New installations default to System language;
+  regional display languages map to a supported language or English, and saved
+  manual en/tr preferences stay selected.
+- Settings include System language and native language names. Language changes
+  update number/date formatting, and Windows widget snapshots carry the resolved
+  language. The MSIX manifest declares all 12 language tags.
+- Added Partner Center description/feature drafts under packaging/store/listings;
+  these are JSON field drafts, not Partner Center import CSV files. Screenshot
+  generation accepts all 12 languages and keeps the light widget in the same
+  language as the listing. No Store upload or publication performed for this change.
+- Release build passed with zero warnings/errors. Current automated suite:
+  103/103 passed. Every language passed 18 synthetic GUI checks (216 total),
+  including settings selection, culture agreement, navigation, saves and widget
+  rendering. Results: artifacts/localization-smoke/languages.json. German,
+  French, Russian and Polish dashboard/settings/widget captures visually checked.
+
+### Windows 11 Widgets Board (3 October 2026)
+
+- Added a self-contained x64 provider, COM/Widgets manifest registrations and
+  package-scoped IWidgetProvider RPC proxy. Small/medium/large Adaptive Cards
+  follow app language, account order/visibility and percentage/cost settings.
+  Commands reuse the packaged app; the provider reads only an atomic display
+  summary, without credentials, conversation identifiers or a second database writer.
+- Release build: zero warnings/errors; 103/103 automated tests passed. Synthetic
+  packaged WPF smoke passed 18 checks (`artifacts/widget-ui-smoke/smoke-report.json`).
+  All three Adaptive Cards rendered without validation errors; the 300x304 picker
+  preview uses synthetic data, not a live Widgets Board capture.
+- Final upload package is unsigned
+  `artifacts/msix-widget-store-v2/AIUsageViewer-0.3.0-beta.3-win-x64.msix`,
+  version 0.3.3.0, family `Mikrofab.AiUsageNest_6detc4ys2wkvc`.
+  Windows Sandbox build 26100, without dotnet on PATH, passed installation,
+  Start-menu activation, snapshot publication, native cross-process
+  IWidgetProvider activation, StartupTask background launch after a new logon,
+  and uninstall/data removal (`artifacts/widget-sandbox-5/msix-result.json`).
+- Live Win+W card appearance/actions still require manual acceptance. Native UI
+  automation was unavailable on this host. Partner Center access stopped at
+  Microsoft's updated service agreement; no package upload or publication occurred.
+  See [Windows widget guide](WINDOWS_WIDGET_TR.md).
+
 ## Workspace commands
 
 ```powershell

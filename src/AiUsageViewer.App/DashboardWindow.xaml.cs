@@ -9,7 +9,11 @@ public partial class DashboardWindow : Window
     {
         InitializeComponent();DataContext=model;UpdateHeaders();
         model.PropertyChanged+=(_,e)=> { if(e.PropertyName==nameof(model.L)) UpdateHeaders(); };
-        void UpdateHeaders() { UsageGrid.Columns[0].Header=model.L["name"];UsageGrid.Columns[1].Header=model.L["total"]; }
+        void UpdateHeaders()
+        {
+            var keys=new[]{"name","total","input","output","cache"};
+            for(var i=0;i<keys.Length;i++) UsageGrid.Columns[i].Header=model.L[keys[i]];
+        }
     }
     protected override void OnClosing(CancelEventArgs e) { if(!AllowClose) { e.Cancel=true;Hide(); } base.OnClosing(e); }
     private void OpenGroup(object sender,System.Windows.Input.MouseButtonEventArgs e)

@@ -13,6 +13,7 @@ licenses; the application license does not replace them.
 | SQLitePCLRaw core, bundle and provider | 2.1.12 | Copyright 2014–2024 SourceGear, LLC; Apache-2.0 |
 | SQLitePCLRaw.lib.e_sqlite3 | 2.1.12 | SourceGear distribution, Apache-2.0; upstream SQLite public domain |
 | Inno Setup installer engine | 7.1.0 | Copyright 1997–2026 Jordan Russell; portions 2000–2026 Martijn Laan; Inno Setup license |
+| Windows App SDK Widgets / Base (MSIX widget provider only) | 2.0.5 / 2.0.3 | © Microsoft Corporation; Microsoft Windows App SDK license, included in `Widgets/WindowsAppSDK-LICENSE.txt` |
 
 License texts are in `docs/licenses` in the source and `licenses` in the binary
 package. Runtime packages may additionally include their original license/notice

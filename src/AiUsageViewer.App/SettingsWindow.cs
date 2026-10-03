@@ -35,7 +35,7 @@ public sealed class SettingsWindow : Window
         this.testConnection=testConnection;hidden=new(settings.HiddenAccounts);
         accounts=new(settings.Accounts.OrderBy(a=>settings.AccountOrder.IndexOf(a.Id) is var n&&n>=0?n:int.MaxValue));sources=new(settings.Sources);
         priceOverrides=new(settings.PriceOverrides);
-        Title=l["settings"]+" · "+Localization.AppName;Width=720;Height=690;MinWidth=560;MinHeight=500;WindowStartupLocation=WindowStartupLocation.CenterOwner;
+        Title=l["settings"]+" · "+Localization.AppName;Width=800;Height=690;MinWidth=650;MinHeight=500;WindowStartupLocation=WindowStartupLocation.CenterOwner;
         Style=(Style)FindResource(typeof(Window));
         var root=new DockPanel { Margin=new Thickness(24) };Content=root;
         var footer=new StackPanel { Orientation=Orientation.Horizontal,HorizontalAlignment=HorizontalAlignment.Right,Margin=new Thickness(0,20,0,0) };
@@ -50,11 +50,15 @@ public sealed class SettingsWindow : Window
     }
     private TabItem Tab(string title,UIElement body)=>new() { Header=title,Content=new ScrollViewer { Content=body,VerticalScrollBarVisibility=ScrollBarVisibility.Auto,Margin=new Thickness(10,20,10,0) } };
     private static Button Button(string label,Action action) { var button=new Button { Content=label };button.Click+=(_,_)=>action();return button; }
-    private static void Label(Panel panel,string text) => panel.Children.Add(new TextBlock { Text=text,Margin=new Thickness(0,14,0,6) });
+    private static void Label(Panel panel,string text) => panel.Children.Add(new TextBlock { Text=text,TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,14,0,6) });
     private UIElement Appearance()
     {
         var stack=new StackPanel();
-        Label(stack,l["language"]);language.ItemsSource=new[]{new Choice("tr","Türkçe"),new Choice("en","English")};language.SelectedIndex=original.Language=="en"?1:0;stack.Children.Add(language);
+        Label(stack,l["language"]);
+        language.Name="LanguageChoice";language.ItemsSource=new[]{new Choice(AppLanguages.System,l["systemLanguage"])}
+            .Concat(AppLanguages.Supported.Select(x=>new Choice(x.Code,x.NativeName))).ToArray();
+        language.SelectedValuePath=nameof(Choice.Key);language.SelectedValue=AppLanguages.NormalizeSetting(original.Language);
+        stack.Children.Add(language);
         Label(stack,l["theme"]);theme.ItemsSource=new[]{new Choice("dark",l["dark"]),new Choice("light",l["light"])};theme.SelectedIndex=original.Theme=="light"?1:0;stack.Children.Add(theme);
         topmost.Content=l["alwaysOnTop"];topmost.IsChecked=original.AlwaysOnTop;stack.Children.Add(topmost);
         locked.Content=l["lockPosition"];locked.IsChecked=original.LockPosition;stack.Children.Add(locked);

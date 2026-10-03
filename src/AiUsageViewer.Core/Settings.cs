@@ -6,7 +6,7 @@ public sealed record AppSettings
 {
     public int Version { get; init; } = 1;
     // First run follows the Windows display language; saved settings keep the user's choice.
-    public string Language { get; init; } = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName=="tr"?"tr":"en";
+    public string Language { get; init; } = AppLanguages.System;
     public string Theme { get; init; } = "dark";
     public bool ShowRemaining { get; init; }
     public bool AlwaysOnTop { get; init; } = true;

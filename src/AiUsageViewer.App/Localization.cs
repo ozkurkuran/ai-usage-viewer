@@ -1,73 +1,12 @@
+using AiUsageViewer.Core;
+
 namespace AiUsageViewer.App;
 
 public sealed class Localization(string language)
 {
     public const string AppName="Ai UsageNest";
     public const string PrivacyUrl="https://github.com/ozkurkuran/ai-usage-viewer/blob/main/PRIVACY.md";
-    public string Language { get; }=language;
-    public string this[string key]=>Values.TryGetValue(key,out var value)?Language=="tr"?value.Tr:value.En:key;
-    private static readonly Dictionary<string,(string Tr,string En)> Values=new() {
-        ["overview"]=("Genel bakış","Overview"),["subscriptions"]=("Abonelikler","Subscriptions"),
-        ["models"]=("Modeller","Models"),["projects"]=("Projeler","Projects"),["sessions"]=("Oturumlar","Sessions"),
-        ["settings"]=("Ayarlar","Settings"),["local"]=("Bu cihaz","This device"),["refresh"]=("Yenile","Refresh"),
-        ["today"]=("Bugün","Today"),["week"]=("Son 7 gün","Last 7 days"),["month"]=("Bu ay","This month"),["all"]=("Tüm geçmiş","All history"),
-        ["allTools"]=("Tüm araçlar","All tools"),["allModels"]=("Tüm modeller","All models"),
-        ["tokens"]=("İşlenen token","Processed tokens"),["input"]=("Input","Input"),["output"]=("Output","Output"),
-        ["cache"]=("Cache","Cache"),["requests"]=("Kullanım kaydı","Usage records"),
-        ["quota"]=("Abonelik kullanımı","Subscription usage"),["activity"]=("Kullanım geçmişi","Usage history"),
-        ["heatmap"]=("Son 13 hafta","Last 13 weeks"),["less"]=("Az","Less"),["more"]=("Çok","More"),
-        ["used"]=("kullanıldı","used"),["remaining"]=("kaldı","remaining"),["unknown"]=("Bilinmiyor","Unknown"),
-        ["noData"]=("Henüz kullanım kaydı yok. Ayarlardan kaynak klasörlerini kontrol edebilirsin.","No usage records yet. Check source folders in Settings."),
-        ["scope"]=("Tokenlar bu cihazdaki kayıtlardan; kotalar bağlı hesaplardan gelir.","Tokens come from this device; quotas come from connected accounts."),
-        ["details"]=("Detayları aç","Open details"),["widget"]=("Widget","Widget"),["hide"]=("Gizle","Hide"),["exit"]=("Çıkış","Exit"),
-        ["ready"]=("Güncel","Up to date"),["partial"]=("Kısmi veri","Partial data"),["stale"]=("Eski veri","Stale data"),
-        ["signIn"]=("Giriş gerekli","Sign in required"),["unavailable"]=("Bağlantı yok","Unavailable"),["rateLimited"]=("İstek sınırı","Rate limited"),
-        ["unsupported"]=("Kota bildirilmedi","Quota not reported"),["notChecked"]=("Henüz yenilenmedi","Not refreshed yet"),
-        ["sessionWindow"]=("Oturum","Session"),["weeklyWindow"]=("Haftalık","Weekly"),["additionalWindow"]=("Ek kota","Additional quota"),
-        ["reset"]=("Yenilenme","Resets"),["awaitingReset"]=("Yenileme bekleniyor","Awaiting refresh"),
-        ["updated"]=("Son güncelleme","Updated"),["scanning"]=("Kayıtlar okunuyor…","Reading records…"),
-        ["refreshing"]=("Hesaplar güncelleniyor…","Refreshing accounts…"),["export"]=("Dışa aktar","Export"),
-        ["name"]=("Ad","Name"),["total"]=("Toplam token","Total tokens"),["privacy"]=("Yerel · Açık kaynak","Local · Open source"),
-        ["demo"]=("ÖRNEK VERİ","DEMO DATA"),["verified"]=("doğrulanamayan fork kaydı toplam dışında","unverified fork records excluded"),
-        ["appearance"]=("Görünüm","Appearance"),["accounts"]=("Hesaplar","Accounts"),["sources"]=("Veri kaynakları","Data sources"),
-        ["language"]=("Dil","Language"),["theme"]=("Tema","Theme"),["dark"]=("Koyu","Dark"),["light"]=("Açık","Light"),
-        ["alwaysOnTop"]=("Widget her zaman üstte","Keep widget on top"),["lockPosition"]=("Widget konumunu kilitle","Lock widget position"),
-        ["remainingMode"]=("Kalan kotayı göster","Show remaining quota"),["opacity"]=("Opaklık","Opacity"),
-        ["save"]=("Kaydet","Save"),["cancel"]=("İptal","Cancel"),["add"]=("Ekle","Add"),["remove"]=("Kaldır","Remove"),
-        ["profile"]=("Profil klasörü","Profile directory"),["apiKey"]=("API anahtarı","API key"),["test"]=("Bağlantıyı dene","Test connection"),
-        ["tokenCost"]=("Tahmini API karşılığı","Estimated API equivalent"),["priceUnknown"]=("Fiyat bilinmiyor","Price unknown"),
-        ["startup"]=("Windows ile başlat","Start with Windows"),
-        ["startupManagedByWindows"]=("Windows başlangıç izni kapalı. Ayarlar > Uygulamalar > Başlangıç bölümünden Ai UsageNest'i açabilirsin.","Windows startup is turned off for this app. Turn on Ai UsageNest in Settings > Apps > Startup."),["notifications"]=("Bildirimler","Notifications"),
-        ["balance"]=("Bakiye","Balance"),["usage_daily"]=("Bugünkü harcama","Today's spend"),["usage_weekly"]=("Haftalık harcama","Weekly spend"),
-        ["usage_monthly"]=("Aylık harcama","Monthly spend"),["usage"]=("Tüm zamanlar harcaması","All-time spend"),["byok_usage"]=("BYOK harcaması","BYOK spend"),
-        ["loading"]=("Yükleniyor…","Loading…"),["sourceErrors"]=("Bazı kaynaklara erişilemedi","Some sources could not be read"),
-        ["tariffBasis"]=("Standart kısa bağlam tarifesi; abonelik faturası değildir","Standard short-context tariff; not a subscription bill"),
-        ["priceSource"]=("Fiyat kaynağı","Price source"),["userPrice"]=("Kullanıcı tarifesi","User override"),["activeOverrides"]=("Özel tarifeli model","Models using overrides"),
-        ["clearFocus"]=("Tüm projelere dön","Clear project/session filter"),["prices"]=("Model fiyatları","Model prices"),
-        ["priceHelp"]=("Milyon token başına fiyat. Boş cache alanı bilinmiyor demektir. Tam model kimliği kullanılır.","Price per million tokens. An empty cache rate means unknown. Exact model IDs are used."),
-        ["invalidPrice"]=("Model adı ve geçerli, negatif olmayan fiyatlar gerekli.","A model ID and valid non-negative prices are required."),
-        ["activityScope"]=("Hesap geneli · Tamamlanmış UTC günleri. API son 30 günü sağlar; daha önce alınmış kayıtlar bu cihazda korunur. Yerel token toplamına eklenmez.","Account-wide · Completed UTC days. The API provides the last 30 days; previously collected rows are retained locally. Not added to local token totals."),
-        ["managementRequired"]=("Geçmiş için OpenRouter yönetim anahtarı gerekli. Anahtar kullanım kartı çalışmaya devam eder.","History requires an OpenRouter management key. The key usage card remains available."),
-        ["addOpenRouter"]=("Ayarlardan bir OpenRouter hesabı ekle.","Add an OpenRouter account in Settings."),
-        ["date"]=("Tarih (UTC)","Date (UTC)"),["reportedSpend"]=("Bildirilen harcama","Reported spend"),
-        ["compact"]=("Sıkı widget görünümü","Compact widget"),["showCost"]=("Widget'ta tahmini maliyeti göster","Show estimated cost in widget"),
-        ["showWidgetOnLaunch"]=("Açılışta widget'ı göster","Show widget on launch"),["enabled"]=("Bu hesabı güncelle","Refresh this account"),
-        ["showInWidget"]=("Widget'ta göster","Show in widget"),["moveUp"]=("Yukarı taşı","Move up"),["moveDown"]=("Aşağı taşı","Move down"),
-        ["connectionHelp"]=("Claude/Codex için giriş yapılmış profil klasörünü seç. OpenRouter anahtar kullanımı standart anahtarla; bakiye ve geçmiş yetkiye bağlıdır. Form değişikliklerini Ekle / Kaydet ile uygula.","Choose an authenticated Claude/Codex profile folder. A standard OpenRouter key provides key usage; credits and history depend on permissions. Apply form changes with Add / Save."),
-        ["enableNotifications"]=("Windows bildirimlerini etkinleştir","Enable Windows notifications"),["notifyResets"]=("Doğrulanan kota resetini bildir","Notify confirmed quota resets"),
-        ["quotaThreshold"]=("Kullanılan kota eşiği (%)","Used quota threshold (%)"),["balanceThreshold"]=("Düşük bakiye eşiği (USD)","Low balance threshold (USD)"),
-        ["notificationHelp"]=("Aynı kota dönemi için tekrarlanan uyarılar bastırılır. Windows bildirim ayarları geçerlidir.","Repeated alerts for the same quota period are suppressed. Windows notification settings apply."),
-        ["invalidThreshold"]=("Kota eşiği 1–100, bakiye eşiği en az 0 olmalı.","Quota threshold must be 1–100; balance threshold must be at least 0."),
-        ["saveFailed"]=("Ayarlar kaydedilemedi. Veri klasörünün yazılabilir olduğunu kontrol et.","Settings could not be saved. Check that the data directory is writable."),
-        ["exportFailed"]=("Dışa aktarma tamamlanamadı. Hedef klasöre yazma iznini kontrol et.","Export could not be completed. Check write access to the destination."),
-        ["alertUsage"]=("Kota eşiğine ulaşıldı","Quota threshold reached"),["alertReset"]=("Kota yenilendi","Quota reset confirmed"),["alertBalance"]=("Bakiye azaldı","Balance is low"),
-        ["daily"]=("Günlük","Daily"),["weekly"]=("Haftalık","Weekly"),["monthly"]=("Aylık","Monthly"),["lifetime"]=("Toplam limit","Lifetime limit"),
-        ["dayUnit"]=("g","d"),["hourUnit"]=("sa","h"),["minuteUnit"]=("dk","m"),["permissionRequired"]=("Yetki gerekli","Permission required"),
-        ["accountNameRequired"]=("Hesaba bir ad ver.","Enter a name for this account."),
-        ["gettingStarted"]=("Başlarken","Getting started"),
-        ["gettingStartedText"]=("Ai UsageNest, bu bilgisayardaki Claude Code ve Codex kullanım kayıtlarını okur; OpenRouter kullanımını API anahtarınla gösterir. Claude Code veya Codex'i bir kez kullan ya da Ayarlar'dan OpenRouter hesabı ekle; kayıtlar burada kendiliğinden görünür.",
-            "Ai UsageNest reads the usage records that Claude Code and Codex write on this PC, and shows OpenRouter usage with your API key. Use Claude Code or Codex once, or add an OpenRouter account in Settings; records appear here automatically."),
-        ["trySample"]=("Örnek veriyle dene","Try with sample data"),["privacyPolicy"]=("Gizlilik politikası","Privacy policy"),
-        ["startFailed"]=("Ai UsageNest başlatılamadı. Hata türü: ","Ai UsageNest could not start. Error type: ")
-    };
+    private readonly UiText text=new(language);
+    public string Language=>text.Language;
+    public string this[string key]=>text[key];
 }

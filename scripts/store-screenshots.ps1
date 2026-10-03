@@ -1,4 +1,4 @@
-param([string]$Executable='artifacts/publish/win-x64/AIUsageViewer.exe',[string]$Output='artifacts/store-screenshots',[ValidateSet('en','tr')][string]$Language='en')
+param([string]$Executable='artifacts/publish/win-x64/AIUsageViewer.exe',[string]$Output='artifacts/store-screenshots',[ValidateSet('en','tr','es','de','fr','pt','pt-BR','ru','nl','cs','it','pl')][string]$Language='en')
 # Renders synthetic demo windows at 2x and composes 3840x2160 Microsoft Store screenshots.
 # Demo mode never reads user profiles, accounts or the network.
 $ErrorActionPreference='Stop'
@@ -31,7 +31,8 @@ function Compose([string]$Name,[string[]]$Images) {
         $g.FillRectangle($background,0,0,$width,$height);$background.Dispose()
         $labelFont=[Drawing.Font]::new('Segoe UI',28,[Drawing.FontStyle]::Bold,[Drawing.GraphicsUnit]::Pixel)
         $labelBrush=[Drawing.SolidBrush]::new([Drawing.Color]::FromArgb(255,0xC7,0xC1,0xFF))
-        $label=if($Language -eq 'en') { 'DEMO DATA' } else { 'ÖRNEK VERİ' }
+        $locale=Get-Content -LiteralPath (Join-Path $PSScriptRoot "../src/AiUsageViewer.Core/Locales/$Language.json") -Raw | ConvertFrom-Json
+        $label=$locale.demo
         $labelWidth=$g.MeasureString($label,$labelFont).Width
         $g.DrawString($label,$labelFont,$labelBrush,[single](($width-$labelWidth)/2),[single]60)
         $labelBrush.Dispose();$labelFont.Dispose()
@@ -51,7 +52,7 @@ function Compose([string]$Name,[string[]]$Images) {
     } finally { $bitmaps | ForEach-Object { $_.Dispose() } }
 }
 Compose "01-overview-$Language" @('dashboard.png','widget.png')
-Compose "02-widget-and-tray-$Language" @('widget.png','tray.png','widget-light-compact-en.png')
+Compose "02-widget-and-tray-$Language" @('widget.png','tray.png','widget-light-compact.png')
 Compose "03-project-session-detail-$Language" @('session-detail.png')
 Compose "04-openrouter-history-$Language" @('openrouter-history.png')
 Compose "05-settings-$Language" @('settings-1.png','settings-3.png')

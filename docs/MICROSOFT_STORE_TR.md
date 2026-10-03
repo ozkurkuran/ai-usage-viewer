@@ -14,6 +14,11 @@ kurulumu ve portable ZIP GitHub sürümleri için aynen kalır.
 
 ## Hazır olanlar
 
+MSIX paketi Windows 11 Widget'lar paneli sağlayıcısını da içerir. Kurulumdan
+sonra kullanıcı Win + W → Widget ekle → **Ai UsageNest** yoluyla kartı ekler.
+Masaüstü widget'ı ve panel widget'ı birlikte kullanılabilir. Sağlayıcının
+derleme, görsel ve kabul adımları [Windows widget rehberinde](WINDOWS_WIDGET_TR.md).
+
 | Parça | Yer |
 |---|---|
 | MSIX manifest şablonu (x64, Windows 11+, `runFullTrust`, StartupTask) | `packaging/msix/AppxManifest.template.xml` |
@@ -21,8 +26,44 @@ kurulumu ve portable ZIP GitHub sürümleri için aynen kalır.
 | Uygulama simgesi ve MSIX görselleri | `src/AiUsageViewer.App/Assets/AppIcon.ico`, `packaging/msix/Assets/` (`scripts/generate-assets.ps1` ile üretilir) |
 | Store logoları | `packaging/store/AppTileIcon-300.png`, `packaging/store/BoxArt-1080.png` |
 | Paketleme | `scripts/package-msix.ps1` |
-| Store ekran görüntüleri (3840×2160, örnek veri) | `scripts/store-screenshots.ps1 -Language en` / `-Language tr` |
+| Store ekran görüntüleri (3840×2160, örnek veri) | `scripts/store-screenshots.ps1 -Language en` (12 dil desteklenir) |
+| 12 dilde mağaza açıklama taslakları | `packaging/store/listings/*.json` |
 | Gizlilik politikası | [PRIVACY.md](../PRIVACY.md) (uygulamada kenar çubuğundan da açılır) |
+
+### Dil desteği ve yerelleştirilmiş mağaza sayfası
+
+Uygulamada 12 dil seçeneği vardır: İngilizce, Türkçe, İspanyolca, Almanca,
+Fransızca, Portekizce (Portekiz ve Brezilya), Rusça, Hollandaca, Çekçe,
+İtalyanca ve Lehçe. Varsayılan **Sistem dili** her açılışta Windows görüntüleme
+dilini izler; `es-MX`, `es-AR`, `fr-CA`, `de-AT`, `nl-BE` gibi bölgesel diller
+aynı dilin arayüzüyle eşleşir. Desteklenmeyen dilde İngilizce kullanılır.
+Ayarlardan elle seçilen dil kaydedilir. Eski sürümde kaydedilmiş `en`/`tr`
+tercihi korunur; otomatik seçim için kullanıcı Sistem dili seçeneğine geçebilir.
+
+MSIX manifesti bu 12 dili bildirir. Paket yüklendiğinde desteklenen diller
+mağazada gösterilir; açıklamaların yerelleştirilmesi ayrı bir Partner Center
+adımıdır. [Microsoft'un dil belgesi](https://learn.microsoft.com/en-us/windows/apps/design/globalizing/manage-language-and-region)
+paket dil listesinin mağazada gösterildiğini açıklar. Mağaza istemcisinin
+dil/bölge tercihleriyle seçtiği açıklama dilini uygulama kodu belirlemez.
+
+Partner Center'da **Store listings → Add/remove languages** bölümünden
+`en-us`, `tr-tr`, `es-es`, `de-de`, `fr-fr`, `pt-pt`, `pt-br`, `ru-ru`,
+`nl-nl`, `cs-cz`, `it-it`, `pl-pl` listelemelerini ekle. Her dil için
+`packaging/store/listings/<dil>.json` içindeki `shortDescription`, `description`
+ve `productFeatures` alanlarını ilgili form alanlarına aktar. JSON dosyaları
+doğrudan içe aktarılabilen Partner Center CSV'si değildir; toplu aktarımda
+önce Partner Center'ın verdiği CSV şablonunu dışa aktar ve alanlarını doldur.
+İlk gönderimde **What's new** boş bırakılır.
+[Microsoft'un listeleme belgesi](https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/add-and-edit-store-listing-info)
+bu alanları, CSV aktarımını ve her dil için açıklama ile ekran görüntüsü
+gereksinimini açıklar.
+
+İlgili dilde görüntüler için örnek komut:
+`./scripts/store-screenshots.ps1 -Executable <yeni-publish>/AIUsageViewer.exe -Language de -Output artifacts/store-screenshots-de`.
+Her dili ayrı çıktı klasörüne al; yerelleştirilmiş görüntüleri o dilin
+listelemesine yükle. Açıklama metni yeni sürümün dil desteğini tarif ettiğinden
+eski iki dilli pakete bu metinleri ekleme. Bu dosyaların oluşturulması mağazaya
+yükleme veya yayınlama yapmaz.
 
 Paketli sürümde "Windows ile başlat" ayarı HKCU Run yerine Windows StartupTask
 kullanır. Kullanıcı bunu Ayarlar > Uygulamalar > Başlangıç bölümünden de kapatıp
@@ -44,7 +85,7 @@ Microsoft Store Policies 7.20 (14 Eylül 2026) maddelerine göre:
 | 10.4.2 Kararlılık | Başlatma hatası iki dilli mesajla kapanır; Sandbox testinde çökme yok |
 | 10.5.1 Gizlilik | Win32 uygulaması olduğu için zorunlu; URL Partner Center'a girilir, uygulamada bağlantı var, Mikrofab ve iletişim bilgisi yazılı |
 | 10.6 Yetenekler | Yalnız `internetClient` ve `runFullTrust`; gerekçe aşağıda |
-| 10.7 Yerelleştirme | Manifest `en-us` ve `tr-tr` bildirir; **iki dilde de listeleme zorunlu**. İlk açılış dili Windows diline göre seçilir |
+| 10.7 Yerelleştirme | Manifest 12 dil bildirir; ilgili dillerde açıklama taslakları hazırdır. En az bir listeleme gerekir; Microsoft desteklenen her dil için listeleme önerir. Varsayılan arayüz dili Windows diline göre seçilir |
 | 10.14 Şirket hesabı | Destek iletişimi (`app@mikrofab.com`) Partner Center'a girilir |
 | 11.2 Üçüncü taraf adları | Anthropic, OpenAI, OpenRouter ile bağlantı olmadığı açıklamada yazılı; onların logoları kullanılmıyor |
 
@@ -208,7 +249,7 @@ kendin alırsın.
 > • Subscription quota and reset times for Claude and Codex accounts signed in with the official command-line tools.
 > • OpenRouter key limits and spend, account credits and completed-day activity history, depending on key permissions.
 > • Estimated API-equivalent cost using dated, sourced prices and your own overrides; CSV and JSON export.
-> • Desktop widget with card ordering, compact mode, used or remaining view, opacity, dark and light themes, English and Turkish.
+> • Desktop widget with card ordering, compact mode, used or remaining view, opacity, dark and light themes, and 12 language options with automatic Windows language selection.
 > • Optional notifications for quota thresholds, resets and low balance; optional start with Windows.
 >
 > Private by design: usage data stays on your device. There is no app account,
@@ -228,7 +269,7 @@ kendin alırsın.
 - OpenRouter key usage, credits and daily activity
 - Estimated API-equivalent cost with sourced prices
 - CSV and JSON export
-- Dark and light themes, English and Turkish
+- Dark and light themes, 12 language options
 - No telemetry; data stays on your device
 
 **Screenshots** (`artifacts/store-screenshots`, sırasıyla) ve açıklamaları:
@@ -249,9 +290,10 @@ terimi olarak kullanma.
 **Additional license terms:** `Free and open source under the MIT License: https://github.com/ozkurkuran/ai-usage-viewer/blob/main/LICENSE`
 **Developed by:** `Mikrofab`
 
-## 6. Store listing: Türkçe (tr-tr), zorunlu
+## 6. Store listing: Türkçe (tr-tr)
 
-Paket Türkçeyi desteklediği için (politika 10.7) bu listeleme de doldurulmalı.
+Türkçe kullanıcılar için bu listelemeyi de doldur. Diğer dillerin açıklama
+taslakları `packaging/store/listings/` altındadır.
 
 **Ürün adı:** Ai UsageNest
 
@@ -270,7 +312,7 @@ Paket Türkçeyi desteklediği için (politika 10.7) bu listeleme de doldurulmal
 > • Resmî CLI ile giriş yapılmış Claude ve Codex hesaplarının kota pencereleri ve yenilenme zamanları.
 > • OpenRouter anahtar limiti/harcaması, hesap bakiyesi ve tamamlanmış gün geçmişi (anahtar yetkisine bağlı).
 > • Kaynaklı ve tarihli fiyatlarla tahmini API karşılığı, kullanıcı tarifeleri, CSV/JSON dışa aktarma.
-> • Kart sırası, sıkı görünüm, kullanılan/kalan gösterimi, opaklık, açık/koyu tema, Türkçe ve İngilizce.
+> • Kart sırası, sıkı görünüm, kullanılan/kalan gösterimi, opaklık, açık/koyu tema ve Windows diline göre otomatik seçilen 12 dil seçeneği.
 > • İsteğe bağlı kota/yenilenme/düşük bakiye bildirimleri ve Windows ile başlatma.
 >
 > Gizlilik öncelikli: kullanım verileri cihazında kalır. Uygulama hesabı,
@@ -291,7 +333,7 @@ Paket Türkçeyi desteklediği için (politika 10.7) bu listeleme de doldurulmal
 - OpenRouter anahtar kullanımı, bakiye ve günlük etkinlik
 - Kaynaklı fiyatlarla tahmini API karşılığı
 - CSV ve JSON dışa aktarma
-- Açık ve koyu tema, Türkçe ve İngilizce
+- Açık ve koyu tema, 12 dil seçeneği
 - Telemetri yok; veriler cihazında kalır
 
 **Ekran görüntüleri** (`artifacts/store-screenshots-tr`, sırasıyla):

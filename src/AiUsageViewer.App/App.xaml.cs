@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AiUsageViewer.Core;
 using AiUsageViewer.Application;
+using AiUsageViewer.Application.WindowsWidgets;
 using AiUsageViewer.Infrastructure.Logs;
 using AiUsageViewer.Infrastructure.Providers;
 using AiUsageViewer.Infrastructure.Storage;
@@ -46,11 +47,15 @@ public partial class App : System.Windows.Application
     private DispatcherTimer? displayTimer;
     private DispatcherTimer? debounce;
     private bool scanning;
+    private WindowsWidgetBridge? windowsWidgetBridge;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
         demo=e.Args.Contains("--demo");
+        var widgetAction=Argument(e.Args,"--windows-widget-action");
+        if(e.Args.Contains("--windows-widget-action")&&(widgetAction is not ("background" or "open" or "refresh")||!PackagedApp.IsPackaged))
+        { Shutdown(2);return; }
         var observation=Argument(e.Args,"--observe-seconds");
         var validatePackage=e.Args.Contains("--validate-package");
         validationRun=e.Args.Contains("--validate-live")||observation is not null||validatePackage;
@@ -62,19 +67,19 @@ public partial class App : System.Windows.Application
         };
         instance=new Mutex(false,"Local\\AiUsageViewer-"+UsageLogParser.Hash(Path.GetFullPath(dataDirectory).ToLowerInvariant())[..24]);
         try { ownsInstance=instance.WaitOne(0); } catch(AbandonedMutexException) { ownsInstance=true; }
-        if(!ownsInstance) { Shutdown();return; }
+        if(!ownsInstance) {
+            if(widgetAction is not null)
+                for(var retry=0;retry<30&&!WidgetAppSignals.Send(dataDirectory,widgetAction);retry++) await Task.Delay(100);
+            Shutdown();return;
+        }
         try
         {
             var language=Argument(e.Args,"--language");
-            if(e.Args.Contains("--language")&&(!demo||language is not ("en" or "tr")))
-                throw new ArgumentException("--language requires --demo and en or tr.");
+            if(e.Args.Contains("--language")&&(!demo||!AppLanguages.IsSupported(language)))
+                throw new ArgumentException("--language requires --demo and a supported language code.");
             if(demo&&language is not null)
             {
-                var culture=System.Globalization.CultureInfo.GetCultureInfo(language=="en"?"en-US":"tr-TR");
-                System.Globalization.CultureInfo.CurrentCulture=culture;
-                System.Globalization.CultureInfo.CurrentUICulture=culture;
-                System.Globalization.CultureInfo.DefaultThreadCurrentCulture=culture;
-                System.Globalization.CultureInfo.DefaultThreadCurrentUICulture=culture;
+                AppLanguages.ApplyCulture(language);
             }
             if(e.Args.Contains("--capture-scale")&&(Argument(e.Args,"--screenshot") is null||!demo||
                 !double.TryParse(Argument(e.Args,"--capture-scale"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out captureScale)||
@@ -86,7 +91,8 @@ public partial class App : System.Windows.Application
                 throw new ArgumentException("Observation requires --background, an explicit --data-dir and 60–43200 seconds; it cannot use demo or screenshot validation.");
             DataDirectoryMode.Ensure(dataDirectory,demo);
             settingsStore=new(dataDirectory);settings=demo?DemoSettings():settingsStore.Load();
-            if(demo&&language is not null) settings=settings with { Language=language };
+            if(demo&&language is not null) settings=settings with { Language=AppLanguages.Resolve(language) };
+            AppLanguages.ApplyCulture(settings.Language);
             notificationStore=new(dataDirectory);notifications=notificationStore.Load();
             ApplyTheme();
             database=new(Path.Combine(dataDirectory,"usage.db"));await database.InitializeAsync(lifetime.Token);
@@ -95,9 +101,21 @@ public partial class App : System.Windows.Application
                 // Disposable Sandbox check: enables the packaged StartupTask and reports the resulting state.
                 if(!PackagedApp.IsPackaged||demo) throw new InvalidOperationException("Package validation requires the installed MSIX package.");
                 var startupEnabled=await PackagedApp.SetStartupEnabledAsync(true);
+                var widgetRuntime=false;var widgetProvider=false;
+                var widgetExecutable=Path.Combine(AppContext.BaseDirectory,"Widgets","AIUsageViewer.Widgets.exe");
+                if(File.Exists(widgetExecutable)) {
+                    foreach(var argument in new[]{"--validate-runtime","--validate-provider"}) {
+                        using var probe=System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(widgetExecutable,argument) { UseShellExecute=false,CreateNoWindow=true });
+                        if(probe is null) continue;
+                        using var timeout=new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                        try { await probe.WaitForExitAsync(timeout.Token); }
+                        catch(OperationCanceledException) { probe.Kill();continue; }
+                        if(argument=="--validate-runtime") widgetRuntime=probe.ExitCode==0;else widgetProvider=probe.ExitCode==0;
+                    }
+                }
                 await File.WriteAllTextAsync(Path.Combine(dataDirectory,"package-validation.json"),JsonSerializer.Serialize(new {
-                    packaged=true,familyName=PackagedApp.FamilyName,startupEnabled,observedAt=DateTimeOffset.UtcNow },new JsonSerializerOptions { WriteIndented=true }));
-                Quit(startupEnabled?0:2);return;
+                    packaged=true,familyName=PackagedApp.FamilyName,startupEnabled,widgetRuntime,widgetProvider,observedAt=DateTimeOffset.UtcNow },new JsonSerializerOptions { WriteIndented=true }));
+                Quit(startupEnabled&&widgetRuntime&&widgetProvider?0:2);return;
             }
             collector=new(database);http=new();
             activityStore=new(Path.Combine(dataDirectory,"usage.db"));await activityStore.InitializeAsync(lifetime.Token);
@@ -114,6 +132,10 @@ public partial class App : System.Windows.Application
             viewModel.ActivityRequested+=()=>new ActivityWindow(settings,activityStore,()=>activitySync.RefreshAsync(settings.Accounts,true,lifetime.Token)) { Owner=dashboard }.Show();
             widget.DetailsRequested+=ShowDashboard;panel.DetailsRequested+=ShowDashboard;
             widget.ApplySettings(settings,true);
+            if(PackagedApp.IsPackaged&&!demo&&!validationRun) {
+                windowsWidgetBridge=new(dataDirectory,Dispatcher,ShowDashboard,RefreshAllAsync);
+                viewModel.WidgetDataChanged+=PublishWindowsWidget;
+            }
             quotas.Changed+=status=>Dispatcher.BeginInvoke(()=> { viewModel.UpdateAccounts();Notify(status); });
             await viewModel.QueryAsync();viewModel.UpdateAccounts();
             var screenshot=Argument(e.Args,"--screenshot");
@@ -157,13 +179,14 @@ public partial class App : System.Windows.Application
             }
             // An interactive sample-data instance ends with its window so it never lingers in the notification area.
             if(demo) { dashboard.AllowClose=true;dashboard.Closed+=(_,_)=>Quit(); }
-            CreateTray();if(!e.Args.Contains("--background")&&!PackagedApp.LaunchedByStartupTask()) ShowDashboard();if(settings.ShowWidgetOnLaunch&&observation is null) widget.Show();
+            CreateTray();if(widgetAction=="open"||(widgetAction is null&&!e.Args.Contains("--background")&&!PackagedApp.LaunchedByStartupTask())) ShowDashboard();
+            if(settings.ShowWidgetOnLaunch&&observation is null&&widgetAction is null) widget.Show();
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged+=DisplayChanged;
             Microsoft.Win32.SystemEvents.PowerModeChanged+=PowerChanged;
             SetUpWatchers();
             reconcileTimer=new(TimeSpan.FromSeconds(30),DispatcherPriority.Background,async(_,_)=>await CollectSafelyAsync(),Dispatcher);
             quotaTimer=new(TimeSpan.FromSeconds(30),DispatcherPriority.Background,async(_,_)=>await Task.WhenAll(RefreshQuotasSafelyAsync(false),RefreshActivitySafelyAsync(false)),Dispatcher);
-            displayTimer=new(TimeSpan.FromSeconds(30),DispatcherPriority.Background,(_,_)=> { if(widget.IsVisible||dashboard.IsVisible||panel.IsVisible) viewModel.UpdateAccounts(); },Dispatcher);
+            displayTimer=new(TimeSpan.FromSeconds(30),DispatcherPriority.Background,(_,_)=> { if(windowsWidgetBridge is not null||widget.IsVisible||dashboard.IsVisible||panel.IsVisible) viewModel.UpdateAccounts(); },Dispatcher);
             await RefreshAllAsync();
             if(observation is not null) { await ObserveRuntimeAsync(observationSeconds);Quit(); }
         }
@@ -177,10 +200,15 @@ public partial class App : System.Windows.Application
     }
 
     private static string? Argument(string[] args,string key) { var index=Array.IndexOf(args,key);return index>=0&&index+1<args.Length?args[index+1]:null; }
+    private void PublishWindowsWidget()
+    {
+        try { WidgetSnapshotFile.Write(settingsStore.DirectoryPath,viewModel.CreateWindowsWidgetSnapshot()); }
+        catch(Exception ex) when(ex is IOException or UnauthorizedAccessException) { }
+    }
     // Separate process with its own data folder, so sample records never mix with real usage.
     private void OpenSampleData()
     {
-        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Environment.ProcessPath!,["--demo","--language",settings.Language]) { UseShellExecute=false })?.Dispose(); }
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Environment.ProcessPath!,["--demo","--language",AppLanguages.Resolve(settings.Language)]) { UseShellExecute=false })?.Dispose(); }
         catch(Exception ex) when(ex is Win32Exception or InvalidOperationException) { MessageBox.Show(dashboard,viewModel.L["startFailed"]+ex.GetType().Name,Localization.AppName); }
     }
     private void ShowDashboard() { dashboard.Show();dashboard.WindowState=WindowState.Normal;dashboard.Activate(); }
@@ -278,7 +306,7 @@ public partial class App : System.Windows.Application
                 try { if(!demo&&saved.StartWithWindows!=settings.StartWithWindows) await ApplyStartupAsync(settings.StartWithWindows); } catch(Exception rollback) when(rollback is IOException or UnauthorizedAccessException or System.Security.SecurityException or COMException) {}
                 MessageBox.Show(viewModel.L["saveFailed"],Localization.AppName);return;
             }
-            settings=saved;ApplyTheme();widget.ApplySettings(settings);viewModel.ApplySettings(settings);
+            settings=saved;AppLanguages.ApplyCulture(settings.Language);ApplyTheme();widget.ApplySettings(settings);viewModel.ApplySettings(settings);
             foreach(var reference in before.Accounts.Select(a=>a.SecretReference).OfType<string>().Where(r=>!settings.Accounts.Any(a=>a.SecretReference==r)))
                 try { secrets.Delete(reference); } catch(IOException) {} catch(UnauthorizedAccessException) {}
             SetUpWatchers();tray?.Dispose();CreateTray();await quotas.LoadAsync(settings.Accounts,lifetime.Token);await RefreshAllAsync();
@@ -367,6 +395,8 @@ public partial class App : System.Windows.Application
             settings=settings with { WidgetPlacement=NativePlacement.Capture(widget) };
             try { settingsStore.Save(settings); } catch(IOException) {} catch(UnauthorizedAccessException) {}
         }
+        windowsWidgetBridge?.Dispose();
+        if(viewModel is not null) viewModel.WidgetDataChanged-=PublishWindowsWidget;
         lifetime.Cancel();reconcileTimer?.Stop();quotaTimer?.Stop();displayTimer?.Stop();debounce?.Stop();
         foreach(var watcher in watchers) watcher.Dispose();tray?.Dispose();http?.Dispose();
         collector?.Dispose();

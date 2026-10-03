@@ -29,7 +29,7 @@ public sealed class ActivityWindow : Window
         button.Click+=async(_,_)=> { button.IsEnabled=false;try { await refresh();await LoadAsync(); } catch(Exception ex) when(ex is IOException or Microsoft.Data.Sqlite.SqliteException) { status.Text=l["unavailable"]; } finally { button.IsEnabled=true; } };
         DockPanel.SetDock(status,Dock.Bottom);root.Children.Add(status);
         var grid=new DataGrid { ItemsSource=rows,Margin=new Thickness(0,16,0,0) };root.Children.Add(grid);
-        foreach(var (title,path) in new[]{(l["date"],"Day"),(l["models"],"Model"),("Input","Input"),("Output","Output"),(l["requests"],"Requests"),(l["reportedSpend"],"Spend"),("BYOK","Byok")})
+        foreach(var (title,path) in new[]{(l["date"],"Day"),(l["models"],"Model"),(l["input"],"Input"),(l["output"],"Output"),(l["requests"],"Requests"),(l["reportedSpend"],"Spend"),("BYOK","Byok")})
             grid.Columns.Add(new DataGridTextColumn { Header=title,Binding=new Binding(path),Width=path=="Model"?new DataGridLength(1,DataGridLengthUnitType.Star):DataGridLength.Auto });
         account.SelectionChanged+=async(_,_)=> { try { await LoadAsync(); } catch(Exception ex) when(ex is IOException or Microsoft.Data.Sqlite.SqliteException) { status.Text=l["unavailable"]; } };account.SelectedIndex=0;
         if(account.SelectedItem is null) status.Text=l["addOpenRouter"];

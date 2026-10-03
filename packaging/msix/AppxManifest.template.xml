@@ -5,8 +5,10 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap uap5 rescap">
+  IgnorableNamespaces="uap uap3 uap5 com rescap">
   <Identity Name="{{IdentityName}}" Publisher="{{Publisher}}" Version="{{PackageVersion}}" ProcessorArchitecture="x64" />
   <Properties>
     <DisplayName>{{DisplayName}}</DisplayName>
@@ -20,6 +22,16 @@
   <Resources>
     <Resource Language="en-us" />
     <Resource Language="tr-tr" />
+    <Resource Language="es-es" />
+    <Resource Language="de-de" />
+    <Resource Language="fr-fr" />
+    <Resource Language="pt-pt" />
+    <Resource Language="pt-br" />
+    <Resource Language="ru-ru" />
+    <Resource Language="nl-nl" />
+    <Resource Language="cs-cz" />
+    <Resource Language="it-it" />
+    <Resource Language="pl-pl" />
   </Resources>
   <Applications>
     <Application Id="AIUsageViewer" Executable="AIUsageViewer.exe" EntryPoint="Windows.FullTrustApplication">
@@ -33,9 +45,49 @@
         <uap5:Extension Category="windows.startupTask" Executable="AIUsageViewer.exe" EntryPoint="Windows.FullTrustApplication">
           <uap5:StartupTask TaskId="AiUsageViewerStartup" Enabled="false" DisplayName="{{DisplayName}}" />
         </uap5:Extension>
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:ExeServer Executable="Widgets\AIUsageViewer.Widgets.exe" DisplayName="Ai UsageNest Widgets">
+              <com:Class Id="64CE39C7-6E5F-4A94-91FB-BEAC8A1DC514" DisplayName="Ai UsageNest Widgets" />
+            </com:ExeServer>
+          </com:ComServer>
+        </com:Extension>
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension Name="com.microsoft.windows.widgets" DisplayName="{{DisplayName}}" Id="UsageNestWidgets" PublicFolder="Public">
+            <uap3:Properties>
+              <WidgetProvider>
+                <ProviderIcons><Icon Path="Assets\StoreLogo.scale-100.png" /></ProviderIcons>
+                <Activation><CreateInstance ClassId="64CE39C7-6E5F-4A94-91FB-BEAC8A1DC514" /></Activation>
+                <Definitions>
+                  <Definition Id="UsageNest.Overview" DisplayName="{{DisplayName}}" Description="Today's local AI tokens and subscription quotas." AllowMultiple="false">
+                    <Capabilities>
+                      <Capability><Size Name="small" /></Capability>
+                      <Capability><Size Name="medium" /></Capability>
+                      <Capability><Size Name="large" /></Capability>
+                    </Capabilities>
+                    <ThemeResources>
+                      <Icons><Icon Path="Assets\StoreLogo.scale-100.png" /></Icons>
+                      <Screenshots><Screenshot Path="WidgetAssets\Overview.png" DisplayAltText="Synthetic AI usage preview" /></Screenshots>
+                    </ThemeResources>
+                  </Definition>
+                </Definitions>
+              </WidgetProvider>
+            </uap3:Properties>
+          </uap3:AppExtension>
+        </uap3:Extension>
       </Extensions>
     </Application>
   </Applications>
+  <!-- The self-contained provider needs a package-scoped RPC proxy for cross-process
+       IWidgetProvider calls, including clean machines without an existing SDK runtime. -->
+  <Extensions>
+    <Extension Category="windows.activatableClass.proxyStub">
+      <ProxyStub ClassId="93022121-B6C9-4A22-90DB-763E24FD99E1">
+        <Path>Widgets\Microsoft.Windows.Widgets.dll</Path>
+        <Interface Name="Microsoft.Windows.Widgets.Providers.IWidgetProvider" InterfaceId="5C5774CC-72A0-452D-B9ED-075C0DD25EED" />
+      </ProxyStub>
+    </Extension>
+  </Extensions>
   <Capabilities>
     <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />

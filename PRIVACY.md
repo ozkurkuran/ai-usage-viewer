@@ -24,6 +24,15 @@ advertising or crash reporting.
 
 ## What the app stores
 
+The optional Windows 11 Widgets board card displays a local summary of today's
+tokens, estimated API equivalent, account labels and quota/balance information.
+The app writes this display-only summary to `windows-widget.json` in its data
+folder and passes the card content to the Windows widget host. It does not pass
+credentials, conversations, project paths or session identifiers to the widget.
+Opening the widget board can start the app's normal collector in the background;
+the app remains available in the notification area until you exit it. Windows
+Widgets is a Microsoft system component with its own privacy settings and policy.
+
 Settings, usage history, quota observations and notification state are stored in
 the app's data folder (`%LOCALAPPDATA%\AiUsageViewer`). In the Microsoft Store
 version, Windows keeps this folder inside the app's package storage and removes it

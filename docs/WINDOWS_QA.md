@@ -109,3 +109,12 @@ same complete scenario passed for `Mikrofab.AiUsageNest_6detc4ys2wkvc` 0.3.3.0
 If reconnecting immediately after sign-out leaves no active guest session, wait
 for sign-out to finish and run `wsb.exe connect` again with the same Sandbox ID.
 This host permits one active Sandbox at a time; finish it before starting another.
+
+The native Windows Widgets package passed the complete clean-machine scenario
+on 3 October 2026 (`artifacts/widget-sandbox-5/msix-result.json`), including
+display snapshot publication and cross-process IWidgetProvider COM activation.
+Its unsigned upload package is in `artifacts/msix-widget-store-v2`. Release build
+and 103 automated tests passed, as did the 18-check synthetic WPF smoke and all
+three Adaptive Cards renderer previews. Live Win+W card appearance, resize and
+actions remain manual acceptance checks; COM activation does not prove these.
+See [Windows widget guide](WINDOWS_WIDGET_TR.md).

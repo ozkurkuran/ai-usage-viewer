@@ -95,13 +95,22 @@ if($Phase -eq 'Setup') {
         Wait-For { Test-Path -LiteralPath (Join-Path $containerData 'usage.db') } 60 'Packaged app data was not initialized.'
         if(Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'AiUsageViewer')) { throw 'App data was written outside the package container.' }
         $checks+='app data initialized in the package container'
+        Wait-For { Test-Path -LiteralPath (Join-Path $containerData 'windows-widget.json') } 60 'Windows widget snapshot was not published.'
+        $snapshot=Get-Content -LiteralPath (Join-Path $containerData 'windows-widget.json') -Raw | ConvertFrom-Json
+        if($snapshot.Version -ne 1 -or -not $snapshot.PublishedAt) { throw 'Invalid Windows widget snapshot.' }
+        $checks+='Windows widget display snapshot published in the package container'
         Stop-Process -Id $first -Force;Wait-For { -not (Get-Process -Id $first -ErrorAction SilentlyContinue) } 30 'App did not stop.'
 
         $validation=[ViewerActivation]::Launch($aumid,'--validate-package')
         Wait-For { -not (Get-Process -Id $validation -ErrorAction SilentlyContinue) } 120 'Package validation did not finish.'
         $report=Get-Content -LiteralPath (Join-Path $containerData 'package-validation.json') -Raw | ConvertFrom-Json
+        Copy-Item -LiteralPath (Join-Path $containerData 'package-validation.json') -Destination $output
+        Get-ChildItem -LiteralPath $containerData -Filter 'widget-*-probe.json' | Copy-Item -Destination $output
         if(-not $report.packaged -or $report.familyName -ne $installed.PackageFamilyName -or -not $report.startupEnabled) { throw 'StartupTask was not enabled.' }
         $checks+='StartupTask enabled through the app'
+        if(-not $report.widgetRuntime -or -not $report.widgetProvider) { throw 'Windows widget runtime or packaged COM activation failed.' }
+        $checks+='self-contained widget runtime and packaged IWidgetProvider COM activation'
+        Get-Process 'AIUsageViewer.Widgets' -ErrorAction SilentlyContinue | Stop-Process -Force
 
         $once='HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce'
         New-Item -Path $once -Force | Out-Null

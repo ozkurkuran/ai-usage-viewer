@@ -5,6 +5,7 @@
     <Project Path="src/AiUsageViewer.Core/AiUsageViewer.Core.csproj" />
     <Project Path="src/AiUsageViewer.Diagnostics/AiUsageViewer.Diagnostics.csproj" />
     <Project Path="src/AiUsageViewer.Infrastructure/AiUsageViewer.Infrastructure.csproj" />
+    <Project Path="src/AiUsageViewer.Widgets/AiUsageViewer.Widgets.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/AiUsageViewer.Tests/AiUsageViewer.Tests.csproj" />

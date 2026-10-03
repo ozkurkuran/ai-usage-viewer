@@ -6,8 +6,13 @@
 - First run without usage records shows a "Getting started" card with Settings
   and "Try with sample data", which opens a separate demo window that closes its
   own process. The sidebar links to the privacy policy.
-- The first-run language follows the Windows display language (Turkish or English);
-  start-up error messages follow the same language.
+- Added Spanish, German, French, Portuguese (Portugal and Brazil), Russian,
+  Dutch, Czech, Italian and Polish alongside English and Turkish. The default
+  System language follows Windows at launch, including regional matches such as
+  es-MX and fr-CA, with English fallback. Saved manual choices remain selected.
+  Dashboard, settings, tray, notifications and widget cards share the catalogs;
+  dates and numbers follow the selected culture. Added 12 localized Store listing
+  drafts and screenshot support for every language.
 - Added application/window/tray icons and Microsoft Store visual assets.
 - Added MSIX packaging and CI artifacts. Store submission requires the three
   identity values from Partner Center; empty values produce local test packages.
@@ -15,6 +20,11 @@
 - Added privacy policy, Turkish submission guide and English synthetic Store
   screenshots rendered at 2× resolution with matching date/number formatting.
 - Added isolated MSIX installation/startup/uninstall validation scripts.
+- Added a native Windows 11 Widgets Board provider to the MSIX, with small,
+  medium and large cards, app/refresh actions and localized usage summaries.
+  The provider reads a display-only snapshot and reuses the app's collector.
+  Clean-machine COM activation, startup and uninstall passed; live board visual
+  acceptance and Store certification remain pending.
 
 Still a pre-release; Microsoft Store certification and the pending hardware/live
 provider checks are not claimed by these changes.
